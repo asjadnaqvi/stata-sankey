@@ -1,0 +1,104 @@
+
+![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-sankey) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-sankey) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-sankey) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-sankey) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-sankey)
+
+# sankey v1.0
+
+This package allows us to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) (October 2021).
+
+
+## Installation
+
+The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
+
+SSC ():
+
+```
+Coming soon!
+```
+
+GitHub (**v1.0**):
+
+```
+net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
+```
+
+
+
+The `palettes` package is required to run this command:
+
+```
+ssc install palettes, replace
+ssc install colrspace, replace
+```
+
+Even if you have these packages installed, please check for updates: `ado update, update`.
+
+If you want to make a clean figure, then it is advisable to load a clean scheme. These are several available and I personally use the following:
+
+```
+ssc install schemepack, replace
+set scheme white_tableau  
+```
+
+You can also push the scheme directly into the graph using the `scheme(schemename)` option. See the help file for details or the example below.
+
+I also prefer narrow fonts in figures with long labels. You can change this as follows:
+
+```
+graph set window fontface "Arial Narrow"
+```
+
+
+## Syntax
+
+The syntax for **v1.0** is as follows:
+
+```
+sankey value [if] [in], from(var) to(var) by(var)
+                  [ palette(str) colorby(layer|level) smooth(num 1-8) gap(num) recenter(str) 
+                  alpha(num) labangle(str) labsize(str) valsize(str) valcondition(str)
+                  lwidth(str) lcolor(str) title(str) subtitle(str) note(str) scheme(str) 
+				  name(str) xsize(num) ysize(num) ]
+```
+
+See the help file `help sankey` for details.
+
+The most basic use is as follows:
+
+```
+sankey value, from(var1) to(var2) by(level variable)
+```
+
+where `var1` and `var2` are the string source and destination variables respectively against which the `value` variable is plotted. The `by()` variable defines the levels.
+
+
+
+## Examples
+
+Get the example data from GitHub:
+
+```
+use "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sankey2.dta?raw=true", clear
+```
+
+Let's test the `sankey` command:
+
+
+
+
+## Feedback
+
+Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to report errors, feature enhancements, and/or other requests. 
+
+
+## Versions
+
+**v1.0 (08 Dec 2022)**
+- Public release.
+
+
+
+
+
+
+
