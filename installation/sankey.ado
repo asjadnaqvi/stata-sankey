@@ -2,13 +2,6 @@
 *! Asjad Naqvi 
 
 
-**********************************
-* Step-by-step guide on Medium   *
-**********************************
-
-* if you want to go for even more customization, you can read this guide:
-* Spider plots (26 Jan, 2021) https://medium.com/the-stata-guide/stata-graphs-spider-plots-613808b51f73
-
 cap program drop sankey
 
 
@@ -16,10 +9,10 @@ program sankey, sortpreserve
 
 version 15
  
-	syntax varname(numeric) [if] [in], From(varname) To(varname) by(varname) ///
+	syntax varlist(numeric max=1) [if] [in], From(varname) To(varname) by(varname) ///
 		[ palette(string) smooth(numlist >=1 <=8) gap(real 2) RECENter(string) colorby(string)  alpha(real 75) ]  ///
-		[ LABAngle(string) LABSize(string)  ] ///
-		[ VALSize(string)  VALCONDition(string) ]  ///
+		[ LABAngle(string) LABSize(string) LABPOSition(string) LABGap(string) SHOWTOTal  ] ///
+		[ VALSize(string)  VALCONDition(string) VALFormat(string) VALGap(string) NOVALues ]  ///
 		[ LWidth(string) LColor(string)  ]  ///
 		[ title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)		] 
 		
@@ -43,11 +36,13 @@ version 15
 
 
 qui {
-	preserve 	
+preserve 	
 
 	keep if `touse'
 	keep `varlist' `from' `to' `by'
 
+	collapse (sum) `varlist', by(`from' `to' `by')
+	
 	ren `by' x1
 	summ x1, meanonly
 	replace x1 = x1 - r(min) // rebase to 0
@@ -235,28 +230,32 @@ qui {
 		local ymax = r(max)
 		
 		
-		if "`recenter'" == "bot" {
+		if "`recenter'" == "bottom" | "`recenter'" == "bot"  | "`recenter'" == "b" { 
 			local displace = 0
 		}
-		
-		
-		if "`recenter'" == "" | "`recenter'" == "mid" {
+			
+			
+		if "`recenter'" == "" | "`recenter'" == "middle" | "`recenter'" == "mid"  | "`recenter'" == "m" { 
 			local displace = (`hival' - `ymax') / 2
 		}
-		
-		if "`recenter'" == "top" {
+			
+		if "`recenter'" == "top" | "`recenter'" == "t"  {
 			local displace = `hival' - `ymax'
 		}		
 		
-		// di "layer `x' has bounds `ymin' and `ymax' and needs a displacement of `displace'"
 		
 		replace y1 = y1 + `displace' if x==`x'
 		replace y2 = y2 + `displace' if x==`x'
 		
 	}
 	
+	// update the value of starting layer to total
 	
-
+	cap drop sums
+	bysort layer x lab: egen sums = sum(val)
+	
+	
+	
 	*** generate the curves	
 	local newobs = 30	
 	expand `newobs'
@@ -264,14 +263,14 @@ qui {
 	cap drop xtemp
 	bysort id: gen xtemp =  (_n / (`newobs' * 2))
 
-	if "`smooth'" == "" local smooth = 3
+	if "`smooth'" == "" local smooth = 4
 	
 	gen ytemp =  (1 / (1 + (xtemp / (1 - xtemp))^-`smooth'))
 
 	gen y1temp = .
 	gen y2temp = .
 
-
+	
 	levelsof layer	, local(cuts)
 	levelsof id		, local(lvls)
 
@@ -337,10 +336,10 @@ qui {
 
 	replace xtemp = xtemp + layer - 1
 
-		
+
 	***** mid points for wedges
 			 
-			 
+				 
 	egen tag = tag(x order)
 			 
 	cap gen midy = .
@@ -367,14 +366,14 @@ qui {
 	***** mid points for sankey labels
 
 	egen tagp = tag(id)
-	cap gen midp = .
-
+	cap gen midp   = .  // outgoing
+	cap gen midpin = .  // incoming
+	cap gen xin = .
 
 	levelsof id, local(lvls)
 	foreach x of local lvls {
 
-
-
+	// outbound values
 		summ x if id==`x', meanonly
 		local xval = r(min)
 		
@@ -386,10 +385,22 @@ qui {
 		
 		replace midp = (`min' + `max') / 2 if id==`x' & tagp==1
 		
+	// inbound values
+		summ x if id==`x', meanonly
+		local xval = r(max)
 		
+		summ y1 if id==`x' & x==`xval', meanonly
+		local min = r(min)
+		
+		summ y2 if id==`x'  & x==`xval', meanonly
+		local max = r(max)
+		
+		replace midpin = (`min' + `max') / 2 if id==`x' & tagp==1		
+		replace xin = x + 1 if id==`x' & tagp==1	
 	}
 
 
+	
 			
 	*** fix boxes
 						
@@ -481,8 +492,11 @@ qui {
 			
 	**** PLOT EVERYTHING ***
 	
-	if "`labangle'" == "" local labangle 90
-	if "`labsize'"  == "" local labsize 2	
+	if "`labangle'" 	== "" local labangle 90
+	if "`labsize'"  	== "" local labsize 2	
+	if "`labposition'"  == "" local labposition 0	
+	if "`labgap'" 		== "" local labgap 0
+	
 	if "`valsize'"  == "" local valsize 1.5
 	if "`valcondition'"  == "" {
 		local labcon "if val >= 0"
@@ -490,21 +504,48 @@ qui {
 	else {
 		local labcon "if val `valcondition'"
 	}
-				
+	
+	if "`valformat'" == "" local valformat "%12.0f"	
+	format val `valformat'
+	
+	if "`valgap'" 	 == "" local valgap 2
+	
+	summ ymax, meanonly
+	local yrange = r(max)
+	
+	if "`showtotal'" != "" {
+		gen lab2 = lab + " (" + string(sums, "`valformat'") + ")"
+		local lab lab2
+	}
+	else {
+		local lab lab
+	}
+	
+	if "`novalues'" == "" {
+		local values `values' (scatter midp   x   `labcon', msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(3)             mlabgap(`valgap')                       mlabcolor(black)) ///
+		
+		local values `values' (scatter midpin xin `labcon', msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(9)             mlabgap(`valgap')                       mlabcolor(black)) ///
+		
+	}
+	
+	
+	
+	// final plot
 		
 	twoway ///
 		`shapes' ///
-			`boxes' ///
-			(scatter midy x if tag==1, msymbol(none) mlabel(lab) mlabsize(`labsize') mlabpos(0) mlabangle(`labangle') mlabcolor(black)) ///
-			(scatter midp x `labcon', msymbol(none) mlabel(val) mlabgap(1.2) mlabsize(`valsize') mlabpos(3) mlabcolor(black)) ///
+		`boxes'  ///
+			(scatter midy   x if tag==1,  msymbol(none) mlabel(`lab') mlabsize(`labsize') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(black)) ///
+			`values' ///
 			, ///
 				legend(off) ///
-					xlabel(, nogrid) ylabel(, nogrid)     ///
+					xlabel(, nogrid) ylabel(0 `yrange' , nogrid)     ///
 					xscale(off) yscale(off)	 ///
 					`title' `subtitle' `note' `scheme' `name' ///
 					`xsize' `ysize'
 
- restore
+
+restore
 }
 		
 end

@@ -85,10 +85,9 @@ Let's test the `sankey` command:
 
 
 
-
 ## Feedback
 
-Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to report errors, feature enhancements, and/or other requests. 
+Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to report errors, feature enhancements, and/or other requests.
 
 
 ## Versions
