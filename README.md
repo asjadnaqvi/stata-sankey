@@ -84,6 +84,89 @@ use "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sankey2.dta?raw=t
 Let's test the `sankey` command:
 
 
+```
+sankey value, from(source) to(destination) by(layer)
+```
+
+<img src="/figures/sankey1.png" height="600">
+
+
+### Smooth 
+
+```
+sankey value, from(source) to(destination) by(layer) smooth(2)
+```
+
+<img src="/figures/sankey2_1.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) smooth(8)
+```
+
+<img src="/figures/sankey2_2.png" height="600">
+
+
+### Re-center
+
+```
+sankey value, from(source) to(destination) by(layer) recenter(bot)
+```
+
+<img src="/figures/sankey3_1.png" height="600">
+
+
+```
+sankey value, from(source) to(destination) by(layer) recenter(top)
+```
+
+<img src="/figures/sankey3_2.png" height="600">
+
+### Gaps
+
+```
+sankey value, from(source) to(destination) by(layer) gap(0)
+```
+
+<img src="/figures/sankey4_1.png" height="600">
+
+
+```
+sankey value, from(source) to(destination) by(layer) gap(20)
+```
+
+<img src="/figures/sankey4_2.png" height="600">
+
+### Values
+
+```
+sankey value, from(source) to(destination) by(layer) noval showtot)
+```
+
+<img src="/figures/sankey5.png" height="600">
+
+### Palettes
+
+```
+sankey value, from(source) to(destination) by(layer) palette(CET C7)
+```
+
+<img src="/figures/sankey6.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) colorby(level)
+```
+
+<img src="/figures/sankey6_1.png" height="600">
+
+### All together
+
+```
+sankey value, from(source) to(destination) by(layer) palette(CET C7) ///
+	valcond(>100) valsize(1.6) showtotal ///
+	xsize(2) ysize(1) lc(white) lw(0.1) 
+```
+
+<img src="/figures/sankey7.png" height="600">
 
 ## Feedback
 
