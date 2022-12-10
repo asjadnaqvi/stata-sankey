@@ -156,7 +156,7 @@ sankey value, from(source) to(destination) by(layer) palette(CET C7)
 sankey value, from(source) to(destination) by(layer) colorby(level)
 ```
 
-<img src="/figures/sankey6_1.png" height="600">
+<img src="/figures/sankey6_1.png" height="500">
 
 ### All together
 
