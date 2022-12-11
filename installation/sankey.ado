@@ -95,7 +95,6 @@ preserve
 	sort x layer lab id
 	egen tag = tag(x grp)
 	bysort x: replace tag = sum(tag)
-	*cap drop offset
 	
 	levelsof x, local(lvls)
 
@@ -121,7 +120,6 @@ preserve
 	
 	
 	*** transform the groups to be at the mid points	
-
 
 	sort x id y1 y2
 	gen y1t = .
@@ -149,12 +147,12 @@ preserve
 			if "`x'" == "`y'" {  // check if the groups are equal
 
 				// in layer range	
-				summ y1 if lab=="`x'" & layer==`left' & x==`left', meanonly   // here x and y don't matter
+				summ y1 if lab=="`x'" & layer==`left' & x==`left', meanonly   
 					local y1max `r(max)'
 					local y1min `r(min)'
 
 					
-				summ y2 if lab=="`x'" & layer==`left' & x==`left', meanonly   // here x and y don't matter
+				summ y2 if lab=="`x'" & layer==`left' & x==`left', meanonly   
 					local y2max `r(max)'
 					local y2min `r(min)'
 					
@@ -445,11 +443,11 @@ preserve
 
 	foreach x of local lvls {
 
-		if `switch' == 1 { // by layer
+		if `switch' == 1 { 		// by layer
 			summ x if wedge==`x', meanonly
 			local clr = r(mean) + 1
 		}
-		else {  			// by category
+		else {  				// by category
 			summ order if wedge==`x', meanonly
 			local clr = r(mean) 
 		}
@@ -474,10 +472,10 @@ preserve
 
 	foreach x of local lvls {
 		
-		if `switch' == 1 { // by layer
+		if `switch' == 1 {		 	// by layer
 			qui sum layer if id==`x'
 		}
-		else {  // by category
+		else {  					// by category
 			qui sum x if id==`x'
 			qui sum order if id==`x' & x == r(min)
 		}
