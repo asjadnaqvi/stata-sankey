@@ -139,7 +139,7 @@ sankey value, from(source) to(destination) by(layer) gap(20)
 ### Values
 
 ```
-sankey value, from(source) to(destination) by(layer) noval showtot)
+sankey value, from(source) to(destination) by(layer) noval showtot
 ```
 
 <img src="/figures/sankey5.png" height="600">
