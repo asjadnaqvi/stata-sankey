@@ -13,7 +13,7 @@ The package can be installed via SSC or GitHub. The GitHub version, *might* be m
 SSC ():
 
 ```
-Coming soon!
+ssc install sankey, replace
 ```
 
 GitHub (**v1.0**):
