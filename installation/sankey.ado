@@ -151,28 +151,53 @@ preserve
 
 		
 			if "`x'" == "`y'" {  // check if the groups are equal
-
+			
+			// di "`x', `y'"
+			
 				// in layer range	
 				summ y1 if lab=="`x'" & layer==`left' & x==`left', meanonly   
+				if r(N) > 0 {	
 					local y1max `r(max)'
 					local y1min `r(min)'
-
+				}
+				else {
+					local y1max 0
+					local y1min 0
+				}
 					
 				summ y2 if lab=="`x'" & layer==`left' & x==`left', meanonly   
+				if r(N) > 0 {
 					local y2max `r(max)'
 					local y2min `r(min)'
+				}
+				else {
+					local y2max 0
+					local y2min 0
+				}
 					
 				local l1max = max(`y1max',`y2max')
 				local l1min = min(`y1min',`y2min')
 				
 				// out layer range		
 				summ y1 if lab=="`x'" & layer==`right' & x==`left', meanonly 
+				if r(N) > 0 {	
 					local y1max `r(max)'
 					local y1min `r(min)'
+				}
+				else {
+					local y1max 0
+					local y1min 0
+				}
 
 				summ y2 if lab=="`x'" & layer==`right' & x==`left', meanonly 
+				if r(N) > 0 {
 					local y2max `r(max)'
-					local y2min `r(min)'	
+					local y2min `r(min)'
+				}
+				else {
+					local y2max 0
+					local y2min 0
+				}	
 					
 				local l2max = max(`y1max',`y2max')
 				local l2min = min(`y1min',`y2min')				
