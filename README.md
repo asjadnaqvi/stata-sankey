@@ -190,9 +190,9 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 ## Versions
 
 **v1.1 (13 Dec 2022)**
-- option `valformat()` renamed to just `format`. This aligns it with standard Stata usages.
+- Option `valformat()` renamed to just `format`. This aligns it with standard Stata usages.
 - A new option `offset()` added to displace x-axis on the right-hand side. Offset is given in percentage share of x-axis range. This allows rotated labels to be displaced properly.
-
+- Checks for missing bilateral flow combinations. Hitting a non-flow combo was causing the code to crash.
 
 **v1.0 (08 Dec 2022)**
 - Public release.
