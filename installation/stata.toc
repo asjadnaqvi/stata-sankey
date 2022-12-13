@@ -1,4 +1,4 @@
-v 1.0
+v 1.1
 d 'SANKEY': A Stata package for Sankey plots
 d Asjad Naqvi
 d asjadnaqvi@gmail.com

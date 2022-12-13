@@ -1,7 +1,7 @@
 
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-sankey) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-sankey) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-sankey) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-sankey) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-sankey)
 
-# sankey v1.0
+# sankey v1.1
 
 This package allows us to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) (October 2021).
 
@@ -16,7 +16,7 @@ SSC (**v1.0**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.0**):
+GitHub (**v1.1**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -51,14 +51,17 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.0** is as follows:
+The syntax for **v1.1** is as follows:
 
 ```
-sankey value [if] [in], from(var) to(var) by(var)
-                  [ palette(str) colorby(layer|level) smooth(num 1-8) gap(num) recenter(str) 
-                  alpha(num) labangle(str) labsize(str) valsize(str) valcondition(str)
-                  lwidth(str) lcolor(str) title(str) subtitle(str) note(str) scheme(str) 
-				  name(str) xsize(num) ysize(num) ]
+sankey value [if] [in], from(var) to(var) by(var) 
+                [ 
+                  palette(str) colorby(layer|level) smooth(1-8) gap(num) recenter(mid|bot|top) 
+                  labangle(str) labsize(str) labposition(str) labgap(str) showtotal
+                  valsize(str) valcondition(str) format(str) valgap(str) novalues
+                  lwidth(str) lcolor(str) alpha(num offset(num)
+                  title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) 
+                ]
 ```
 
 See the help file `help sankey` for details.
@@ -144,6 +147,7 @@ sankey value, from(source) to(destination) by(layer) noval showtot
 
 <img src="/figures/sankey5.png" height="600">
 
+
 ### Palettes
 
 ```
@@ -157,6 +161,16 @@ sankey value, from(source) to(destination) by(layer) colorby(level)
 ```
 
 <img src="/figures/sankey6_1.png" height="600">
+
+### Label rotations and offset (v1.1)
+
+```
+sankey value, from(source) to(destination) by(layer) noval showtot palette(CET C6) ///
+	laba(0) labpos(3) labg(-1) offset(10)
+```
+
+<img src="/figures/sankey6_2.png" height="600">
+
 
 ### All together
 
@@ -174,6 +188,11 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Versions
+
+**v1.1 (13 Dec 2022)**
+- option `valformat()` renamed to just `format`. This aligns it with standard Stata usages.
+- A new option `offset()` added to displace x-axis on the right-hand side. Offset is given in percentage share of x-axis range. This allows rotated labels to be displaced properly.
+
 
 **v1.0 (08 Dec 2022)**
 - Public release.

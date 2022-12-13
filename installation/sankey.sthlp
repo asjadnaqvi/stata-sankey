@@ -1,7 +1,7 @@
 {smcl}
-{* 08Dec2022}{...}
+{* 13Dec2022}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.0 (beta) (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.1 (GitHub)}}
 
 {hline}
 
@@ -14,15 +14,15 @@
                 {cmd:[} 
                   {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) 
                   {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al}
-                  {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:str}) {cmdab:valf:ormat}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues}
-                  {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num})
+                  {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:str}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues}
+                  {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num} {cmd:offset}({it:num})
                   {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) 
                 {cmd:]}
 
 
 {p 4 4 2}
 Please note that {opt sankey} is still in beta and not all checks and balances have been added.
-Please report errors/bugs/enhancement requests on {browse "https://github.com/asjadnaqvi/stata-alluvial/issues":GitHub} 
+Please report errors/bugs/enhancement requests on {browse "https://github.com/asjadnaqvi/stata-alluvial/issues":GitHub}. 
 
 
 {synoptset 36 tabbed}{...}
@@ -71,9 +71,12 @@ If the label angle is change to horitzontal or the label position is changed fro
 This option can be used to reduce the number of labels displayed especially if there are a lot of very small categories than can make the figure look messy.
 The way to use this option is to define an if condition, e.g. {cmd:valcond(>=100)}, will only show values above 100.{p_end}
 
-{p2coldent : {opt valf:ormat(str)}}The format of the displayed values. Default is {cmd:valf(%12.0f)}.{p_end}
+{p2coldent : {opt format(str)}}The format of the displayed values. Default is {cmd:format(%12.0f)}.{p_end}
 
 {p2coldent : {opt noval:ues}}Hide the values.{p_end}
+
+{p2coldent : {opt offset(num)}}The value, in percentage of x-axis width, to extend the x-axis on the right-hand side. Default is {cmd:offset(0)}.
+This option is highly useful if labels are rotated and positioned, for example, at 3 o'clock.{p_end}
 
 {p2coldent : {opt title()}, {opt subtitle()}, {opt note()}}These are standard twoway graph options.{p_end}
 
@@ -106,13 +109,14 @@ See {browse "https://github.com/asjadnaqvi/sankey":GitHub} for examples.
 
 {title:Version history}
 
+- {bf:1.1} : Enhancements. {opt valformat()} renamed to {opt format()}. {opt offset} added to displace x-axis range.
 - {bf:1.0} : First version.
 
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.0
-This release : 08 Dec 2022
+Version      : {bf:sankey} v1.1
+This release : 13 Dec 2022
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/sankey":GitHub}
 Keywords     : Stata, graph, sankey
