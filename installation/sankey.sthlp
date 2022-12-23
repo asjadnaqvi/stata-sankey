@@ -101,7 +101,7 @@ Even if you have these installed, it is highly recommended to update the depende
 
 {title:Examples}
 
-See {browse "https://github.com/asjadnaqvi/sankey":GitHub} for examples.
+See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 
 
@@ -118,7 +118,7 @@ See {browse "https://github.com/asjadnaqvi/sankey":GitHub} for examples.
 Version      : {bf:sankey} v1.1
 This release : 13 Dec 2022
 First release: 08 Dec 2022
-Repository   : {browse "https://github.com/asjadnaqvi/sankey":GitHub}
+Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
 License      : {browse "https://opensource.org/licenses/MIT":MIT}
 
