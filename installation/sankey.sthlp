@@ -1,7 +1,7 @@
 {smcl}
-{* 13Dec2022}{...}
+{* 02Feb2022}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.1 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.2 (GitHub)}}
 
 {hline}
 
@@ -22,7 +22,7 @@
 
 {p 4 4 2}
 Please note that {opt sankey} is still in beta and not all checks and balances have been added.
-Please report errors/bugs/enhancement requests on {browse "https://github.com/asjadnaqvi/stata-alluvial/issues":GitHub}. 
+Please report errors/bugs/enhancement requests on {browse "https://github.com/asjadnaqvi/stata-sankey/issues":GitHub}. 
 
 
 {synoptset 36 tabbed}{...}
@@ -109,14 +109,15 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Version history}
 
+- {bf:1.2} : Unbalanced in-coming and out-going groups now properly displace. Groups ending and starting in the middle now allowed.
 - {bf:1.1} : Enhancements. {opt valformat()} renamed to {opt format()}. {opt offset} added to displace x-axis range.
 - {bf:1.0} : First version.
 
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.1
-This release : 13 Dec 2022
+Version      : {bf:sankey} v1.2
+This release : 02 Feb 2023
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
@@ -139,8 +140,10 @@ Please submit bugs, errors, feature requests on {browse "https://github.com/asja
 
 {p 4 8 2}Jann, B. (2018). {browse "https://www.stata-journal.com/article.html?article=gr0075":Color palettes for Stata graphics}. The Stata Journal 18(4): 765-785.
 
+{p 4 8 2}Jann, B. (2022). {browse "https://ideas.repec.org/p/bss/wpaper/43.html":Color palettes for Stata graphics: an update}. University of Bern Social Sciences Working Papers No. 43. 
+
 {title:Other visualization packages}
 
 {psee}
     {helpb alluvial}, {helpb circlebar}, {helpb spider}, {helpb treemap}, {helpb circlepack}, {helpb arcplot},
-	{helpb marimekko}, {helpb bimap}, {helpb joyplot}, {helpb streamplot}, {helpb delaunay}, {helpb clipgeo},  {helpb schemepack}
+	{helpb marimekko}, {helpb bimap}, {helpb joyplot}, {helpb streamplot}, {helpb delaunay}, {helpb clipgeo}, {helpb schemepack}

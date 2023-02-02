@@ -1,7 +1,6 @@
-
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-sankey) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-sankey) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-sankey) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-sankey) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-sankey)
 
-# sankey v1.1
+# sankey v1.2
 
 This package allows us to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) (October 2021).
 
@@ -16,7 +15,7 @@ SSC (**v1.1**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.1**):
+GitHub (**v1.2**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -51,7 +50,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.1** is as follows:
+The syntax for **v1.2** is as follows:
 
 ```
 sankey value [if] [in], from(var) to(var) by(var) 
@@ -172,6 +171,17 @@ sankey value, from(source) to(destination) by(layer) noval showtot palette(CET C
 <img src="/figures/sankey6_2.png" height="600">
 
 
+### Unbalanced sankeys (v1.2)
+
+
+```
+import delim "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sankey_simple.xlsx?raw=true"
+
+sankey value, from(source) to(destination) by(layer) showtot 
+```
+
+<img src="/figures/sankey_unbalanced.png" height="600">
+
 ### All together
 
 ```
@@ -188,6 +198,11 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Versions
+
+**v1.2 (02 Feb 2023)**
+- Unbalanced Sankey's are now allowed. This means that incoming and outgoing layers do not necessarily have to be equal. Outgoing can be larger than incoming.
+- A category can now also start in the middle.
+- Various bug fixes.
 
 **v1.1 (13 Dec 2022)**
 - Option `valformat()` renamed to just `format`. This aligns it with standard Stata usages.

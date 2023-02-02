@@ -1,4 +1,4 @@
-v 1.1
+v 1.2
 d {bf:SANKEY}: A Stata package for sankey plots.
 d See {bf:help sankey} after installation.
 d
@@ -8,10 +8,10 @@ d KW: Stata
 d KW: graphs
 d KW: sankey
 d
-d Distribution-Date: 20221213
+d Distribution-Date: 20230202
 d
-d This  version: 13 December 2022
-d First version: 08 December 2022
+d This  version: 02 Feb 2023
+d First version: 08 Dec 2022
 d License: MIT
 d
 d Author: Asjad Naqvi (asjadnaqvi@gmail.com)
