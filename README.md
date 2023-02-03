@@ -181,7 +181,7 @@ sankey value, from(source) to(destination) by(layer) noval showtot palette(CET C
 
 
 ```
-import delim "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sankey_simple.xlsx?raw=true"
+import delim "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sankey_simple.xlsx?raw=true", first clear
 
 sankey value, from(source) to(destination) by(layer) showtot 
 ```
