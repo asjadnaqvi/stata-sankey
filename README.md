@@ -1,5 +1,11 @@
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-sankey) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-sankey) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-sankey) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-sankey) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-sankey)
 
+---
+
+[Installation](#Installation) | [Syntax](#Syntax) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
+
+---
+
 # sankey v1.2
 
 This package allows us to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) (October 2021).
@@ -197,7 +203,7 @@ sankey value, from(source) to(destination) by(layer) palette(CET C7) ///
 Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to report errors, feature enhancements, and/or other requests.
 
 
-## Versions
+## Change log
 
 **v1.2 (02 Feb 2023)**
 - Unbalanced Sankey's are now allowed. This means that incoming and outgoing layers do not necessarily have to be equal. Outgoing can be larger than incoming.
