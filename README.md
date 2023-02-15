@@ -56,7 +56,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.2** is as follows:
+The syntax for **v1.21** is as follows:
 
 ```
 sankey value [if] [in], from(var) to(var) by(var) 
