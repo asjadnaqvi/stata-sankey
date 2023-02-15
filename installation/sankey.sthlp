@@ -1,7 +1,7 @@
 {smcl}
-{* 02Feb2022}{...}
+{* 15Feb2022}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.2 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.21 (GitHub)}}
 
 {hline}
 
@@ -15,7 +15,7 @@
                   {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) 
                   {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al}
                   {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:str}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues}
-                  {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num} {cmd:offset}({it:num})
+                  {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num})
                   {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) 
                 {cmd:]}
 
@@ -57,6 +57,8 @@ Default value is {cmd:alpha(75)} for 75% transparency.{p_end}
 {p2coldent : {opt labs:ize(str)}}The size of the category labels. Default is {cmd:labs(2)}.{p_end}
 
 {p2coldent : {opt laba:ngle(str)}}The angle of the category labels. Default is {cmd:laba(90)} for vertical labels.{p_end}
+
+{p2coldent : {opt labc:olor(str)}}The color of the category labels. Default is {cmd:labc(black)}.{p_end}
 
 {p2coldent : {opt labpos:ition(str)}}The position of the category labels. Default is {cmd:labpos(0)} for centered.{p_end}
 
@@ -109,15 +111,16 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Version history}
 
-- {bf:1.2} : Unbalanced in-coming and out-going groups now properly displace. Groups ending and starting in the middle now allowed.
-- {bf:1.1} : Enhancements. {opt valformat()} renamed to {opt format()}. {opt offset} added to displace x-axis range.
-- {bf:1.0} : First version.
+- {bf:1.21} : Bug fixes for 1.2. {opt labcolor()} added.
+- {bf:1.2}  : Unbalanced in-coming and out-going groups now properly displace. Groups ending and starting in the middle now allowed.
+- {bf:1.1}  : Enhancements. {opt valformat()} renamed to {opt format()}. {opt offset} added to displace x-axis range.
+- {bf:1.0}  : First version.
 
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.2
-This release : 02 Feb 2023
+Version      : {bf:sankey} v1.21
+This release : 15 Feb 2023
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
@@ -126,9 +129,6 @@ License      : {browse "https://opensource.org/licenses/MIT":MIT}
 Author       : {browse "https://github.com/asjadnaqvi":Asjad Naqvi}
 E-mail       : asjadnaqvi@gmail.com
 Twitter      : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
-
-
-{title:Acknowledgements}
 
 
 
@@ -145,5 +145,5 @@ Please submit bugs, errors, feature requests on {browse "https://github.com/asja
 {title:Other visualization packages}
 
 {psee}
-    {helpb alluvial}, {helpb circlebar}, {helpb spider}, {helpb treemap}, {helpb circlepack}, {helpb arcplot},
+    {helpb alluvial}, {helpb circlebar}, {helpb spider}, {helpb treemap}, {helpb circlepack}, {helpb arcplot}, {helpb treecluster}, {helpb sunburst}
 	{helpb marimekko}, {helpb bimap}, {helpb joyplot}, {helpb streamplot}, {helpb delaunay}, {helpb clipgeo}, {helpb schemepack}

@@ -6,7 +6,7 @@
 
 ---
 
-# sankey v1.2
+# sankey v1.21
 
 This package allows us to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) (October 2021).
 
@@ -21,7 +21,7 @@ SSC (**v1.1**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.2**):
+GitHub (**v1.21**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -64,7 +64,7 @@ sankey value [if] [in], from(var) to(var) by(var)
                   palette(str) colorby(layer|level) smooth(1-8) gap(num) recenter(mid|bot|top) 
                   labangle(str) labsize(str) labposition(str) labgap(str) showtotal
                   valsize(str) valcondition(str) format(str) valgap(str) novalues
-                  lwidth(str) lcolor(str) alpha(num offset(num)
+                  lwidth(str) lcolor(str) alpha(num) offset(num) labcolor(str)
                   title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) 
                 ]
 ```
@@ -204,6 +204,10 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+**v1.21 (15 Feb 2023)**
+- `valcond()` fixed.
+- Error in gaps fixed.
 
 **v1.2 (02 Feb 2023)**
 - Unbalanced Sankey's are now allowed. This means that incoming and outgoing layers do not necessarily have to be equal. Outgoing can be larger than incoming.

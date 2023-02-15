@@ -1,9 +1,10 @@
-*! sankey v1.2 (02 Feb 2023)
+*! sankey v1.21 (02 Feb 2023)
 *! Asjad Naqvi 
 
-*v1.2 02 Feb 2023: Outgoing flows now properly displace. Categories going to empty and starting from empty added. Various fixes
-*v1.1 13 Dec 2022: valformat() renamed to format(). offset() option added to displaced x-axis for rotated labels.
-*v1.0 08 Dec 2022: Beta release.
+*v1.21 15 Feb 2023: labcolor() added, gap fix
+*v1.2  02 Feb 2023: Outgoing flows now properly displace. Categories going to empty and starting from empty added. Various fixes
+*v1.1  13 Dec 2022: valformat() renamed to format(). offset() option added to displaced x-axis for rotated labels.
+*v1.0  08 Dec 2022: Beta release.
 
 * A detailed Medium guide on Sankey diagrams is here:
 * https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1
@@ -18,9 +19,9 @@ version 15
 	syntax varlist(numeric max=1) [if] [in], From(varname) To(varname) by(varname) ///
 		[ palette(string) smooth(numlist >=1 <=8) gap(real 5) RECENter(string) colorby(string)  alpha(real 75) ]  ///
 		[ LABAngle(string) LABSize(string) LABPOSition(string) LABGap(string) SHOWTOTal  ] ///
-		[ VALSize(string)  VALCONDition(string) format(string) VALGap(string) NOVALues ]  ///
+		[ VALSize(string)  VALCONDition(real 0) format(string) VALGap(string) NOVALues ]  ///
 		[ LWidth(string) LColor(string)  ]  ///
-		[ offset(real 0) ]  ///  // added options v1.1
+		[ offset(real 0) LABColor(string) ]  ///  // added options v1.1
 		[ title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)		] 
 		
 
@@ -111,68 +112,70 @@ preserve
 	local mark2 0
 
 	levelsof layer
-	local tlayers = r(r)
-
+	
+	if `r(r)' > 1 {
 		
-	forval i = 1/`tlayers' {
-		
-		local here = `i' - 1
-		local next = `i'
+		local tlayers = r(r)	
+		forval i = 1/`tlayers' {
+			
+			local here = `i' - 1
+			local next = `i'
+					
+			levelsof id if layer==`i', local(lvls)
+			
+			foreach x of local lvls {
 				
-		levelsof id if layer==`i', local(lvls)
-		
-		foreach x of local lvls {
-			
-			// value originating
-			summ grp if id==`x' & layer==`i' & x==`here'			    , meanonly
-			local mygrp = r(mean)
-			summ val if id==`x' & layer==`i' & x==`here' & grp==`mygrp' , meanonly
-			local myval = r(sum)
-			
-			// total value of ending group
-			summ grp if id==`x' & layer==`i' & x==`next'	, meanonly
-			local togrp = r(mean)
-			summ val if 		  layer==`i' & x==`next' & grp==`togrp' , meanonly
-			local toval = r(sum)
-			
-			
-			// sending value of ending group
-			local j = `i' + 1
-			summ val if 		  layer==`j' & x==`next' & grp==`togrp' , meanonly
-			local outval = r(sum)
-
-			
-			if (`toval' > `outval') {
-				local off  = `toval' - `outval'  
-						
-				if !inlist(`togrp',`mark1') {
-					qui replace y1 = y1 + `off' if layer==`j' & x==`next' & grp>`togrp' 
-					qui replace y2 = y2 + `off' if layer==`j' & x==`next' & grp>`togrp' 
-					local mark1 `mark1', `togrp'
-				}
+				// value originating
+				summ grp if id==`x' & layer==`i' & x==`here'			    , meanonly
+				local mygrp = r(mean)
+				summ val if id==`x' & layer==`i' & x==`here' & grp==`mygrp' , meanonly
+				local myval = r(sum)
 				
-			}
+				// total value of ending group
+				summ grp if id==`x' & layer==`i' & x==`next'	, meanonly
+				local togrp = r(mean)
+				summ val if 		  layer==`i' & x==`next' & grp==`togrp' , meanonly
+				local toval = r(sum)
+				
+				
+				// sending value of ending group
+				local j = `i' + 1
+				summ val if 		  layer==`j' & x==`next' & grp==`togrp' , meanonly
+				local outval = r(sum)
 
-			if (`outval' > `toval') {
-				local off  = `outval' - `toval'  
-
-				if !inlist(`togrp',`mark2') {
-					qui replace y1 = y1 + `off' if layer==`i' & x==`next' & grp>=`togrp' 
-					qui replace y2 = y2 + `off' if layer==`i' & x==`next' & grp>=`togrp' 
-					local mark2 `mark2', `togrp'
+				
+				if (`toval' > `outval') {
+					local off  = `toval' - `outval'  
+							
+					if !inlist(`togrp',`mark1') {
+						qui replace y1 = y1 + `off' if layer==`j' & x==`next' & grp>`togrp' 
+						qui replace y2 = y2 + `off' if layer==`j' & x==`next' & grp>`togrp' 
+						local mark1 `mark1', `togrp'
+					}
+					
 				}
-			}
+
+				if (`outval' > `toval') {
+					local off  = `outval' - `toval'  
+
+					if !inlist(`togrp',`mark2') {
+						qui replace y1 = y1 + `off' if layer==`i' & x==`next' & grp>=`togrp' 
+						qui replace y2 = y2 + `off' if layer==`i' & x==`next' & grp>=`togrp' 
+						local mark2 `mark2', `togrp'
+					}
+				}
+			}	
 		}	
-	}	
+	}
 
 	
 //// add gaps
 	
+	
 	sort layer id x
 	
 	cap drop tag
-	egen tag = tag(lab layer)
-	
+	egen tag = tag(layer x grp  )
 
 	sort layer x lab id 
 	by layer x: replace tag = sum(tag)	
@@ -196,6 +199,7 @@ preserve
 	
 	replace y1 = y1 + offset
 	replace y2 = y2 + offset
+
 
 	
 ///////////////////////////	
@@ -529,6 +533,7 @@ preserve
 	// arcs
 
 	if "`lcolor'"  == "" local lcolor white
+	if "`labcolor'"  == "" local labcolor black
 	if "`lwidth'"  == "" local lwidth none	
 	
 	levelsof wedge
@@ -565,12 +570,9 @@ preserve
 	if "`labgap'" 		== "" local labgap 0
 	
 	if "`valsize'"  == "" local valsize 1.5
-	if "`valcondition'"  == "" {
-		local labcon "if val >= 0"
-	}
-	else {
-		local labcon "if val `valcondition'"
-	}
+
+	*local labcon "if val >= `valcondition'"
+
 	
 	if "`format'" == "" local format "%12.0f"	
 	format val `format'
@@ -589,9 +591,9 @@ preserve
 	}
 	
 	if "`novalues'" == "" {
-		local values `values' (scatter midp   x   `labcon', msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(3)             mlabgap(`valgap')                       mlabcolor(black)) ///
+		local values `values' (scatter midp   x    if val >= `valcondition', msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(3) mlabgap(`valgap') mlabcolor(`labcolor')) ///
 		
-		local values `values' (scatter midpin xin `labcon', msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(9)             mlabgap(`valgap')                       mlabcolor(black)) ///
+		local values `values' (scatter midpin xin  if val >= `valcondition', msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(9) mlabgap(`valgap') mlabcolor(`labcolor')) ///
 		
 	}
 	
@@ -606,7 +608,7 @@ preserve
 	twoway ///
 		`shapes' ///
 		`boxes'  ///
-			(scatter midy   x if tag==1,  msymbol(none) mlabel(`lab') mlabsize(`labsize') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(black)) ///
+			(scatter midy   x if tag==1 & val >= `valcondition',  msymbol(none) mlabel(`lab') mlabsize(`labsize') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) ///
 			`values' ///
 			, ///
 				legend(off) ///
