@@ -6,7 +6,7 @@
 
 ---
 
-# sankey v1.21
+# sankey v1.3
 
 This package allows us to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) (October 2021).
 
@@ -21,7 +21,7 @@ SSC (**v1.1**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.21**):
+GitHub (**v1.3**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -56,15 +56,15 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.21** is as follows:
+The syntax for **v1.3** is as follows:
 
-```
+```applescript
 sankey value [if] [in], from(var) to(var) by(var) 
                 [ 
                   palette(str) colorby(layer|level) smooth(1-8) gap(num) recenter(mid|bot|top) 
                   labangle(str) labsize(str) labposition(str) labgap(str) showtotal
                   valsize(str) valcondition(str) format(str) valgap(str) novalues
-                  lwidth(str) lcolor(str) alpha(num) offset(num) labcolor(str)
+                  lwidth(str) lcolor(str) alpha(num) offset(num) sortby(value|name) boxwidth(str)
                   title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) 
                 ]
 ```
@@ -204,6 +204,11 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+**v1.3 (26 Feb 2023)**
+- Node bundling added which align nodes in front of each other. This looks better especially if flows are passing through certain nodes.
+- Option `sortby()` added that allows alphabetical sorting (`sortby(name)`) or numerical sorting `sortby(value)` (Thanks to Fabian Unterlass for detailed feedback).
+- Option `boxwdith()` added to allow adjusting the width of node boxes.
 
 **v1.21 (15 Feb 2023)**
 - `valcond()` fixed.

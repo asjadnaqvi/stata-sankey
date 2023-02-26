@@ -1,7 +1,7 @@
 {smcl}
-{* 15Feb2022}{...}
+{* 26Feb2022}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.21 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.3 (GitHub)}}
 
 {hline}
 
@@ -15,13 +15,13 @@
                   {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) 
                   {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al}
                   {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:str}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues}
-                  {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num})
+                  {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmd:sortby}({it:value}|{it:name}) {cmdab:boxw:idth}({it:str})
                   {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) 
                 {cmd:]}
 
 
 {p 4 4 2}
-Please note that {opt sankey} is still in beta and not all checks and balances have been added.
+Please note that {opt sankey} is under active development and not all possible combinations and variations have been added.
 Please report errors/bugs/enhancement requests on {browse "https://github.com/asjadnaqvi/stata-sankey/issues":GitHub}. 
 
 
@@ -29,14 +29,16 @@ Please report errors/bugs/enhancement requests on {browse "https://github.com/as
 {synopthdr}
 {synoptline}
 
-{p2coldent : {opt sankey} value, from() to() by()}The command requires a numeric variable that contains the values. Both {cmd:from()} and {cmd:to()} can contain numeric, labeled or string variables.
+{p2coldent : {opt sankey value, from() to() by()}}The command requires a numeric variable that contains the values. Both {cmd:from()} and {cmd:to()} can contain numeric, labeled or string variables.
 The {cmd:by()} variable contains a layer variable which ideally should be numeric. If strings are used, please make sure spellingd are consitent for categories across layers.{p_end}
 
 {p2coldent : {opt palette(name)}}Color name is any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette tableau:{it:tableau}}.{p_end}
 
-{p2coldent : {opt colorby(option)}}Users can color the diagram by {ul:layer} or {ul:level}.
-The {it:layer} option, determined by the {cmd:by()} variable, will give each layer a unique color.
-The {it:level} option will give each category a unique color, even if they exist across multiple layers.
+{p2coldent : {opt sortby(option)}}Users can sort the data by {ul:value} or {ul:name}. The {opt sortby(value}} arranges the data using a numerical sort, while {opt sortby(name}}
+arranges them alphabetically.{p_end}
+
+{p2coldent : {opt colorby(option)}}Users can color the diagram by {ul:layer} or {ul:level}. The {it:layer} option, determined by the {cmd:by()} variable, will give each 
+layer a unique color. The {it:level} option will give each category a unique color, even if they exist across multiple layers.
 The default value is {cmd:colorby(level)}.{p_end}
 
 {p2coldent : {opt smooth(num)}}This option allows users to smooth out the spider plots connections. It can take on values between [1,8], where 1 is for straight lines, and 8 is stepwise.
@@ -65,7 +67,9 @@ Default value is {cmd:alpha(75)} for 75% transparency.{p_end}
 {p2coldent : {opt labg:ap(str)}}The gap of the category labels from the mid point of the wedges. Default is {cmd:labg(0)} for no gap.
 If the label angle is change to horitzontal or the label position is changed from 0, then {cmd:labg()} can be used to fine-tune the placement.{p_end}
 
-{p2coldent : {opt showtot:al}}Display the category totals.{p_end}
+{p2coldent : {opt showtot:al}}Display the category totals on the node boxes.{p_end}
+
+{p2coldent : {opt boxw:idth(str)}Width of the node boxes. Default is {boxw(3.2)}.{p_end}
 
 {p2coldent : {opt vals:ize(str)}}The size of the displayed values. Default is {cmd:vals(1.5)}.{p_end}
 
@@ -93,7 +97,7 @@ This is particularly helpful if several layers are plotted.{p_end}
 
 {title:Dependencies}
 
-The {browse "http://repec.sowi.unibe.ch/stata/palettes/index.html":palette} package (Jann 2018) is required for {cmd:sankey}:
+The {browse "http://repec.sowi.unibe.ch/stata/palettes/index.html":palette} package (Jann 2018, Jann 2022) is required for {cmd:sankey}:
 
 {stata ssc install palettes, replace}
 {stata ssc install colrspace, replace}
@@ -111,6 +115,7 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Version history}
 
+- {bf:1.3}  : Node bundling added to align nodes across groups. Options {opt sortby()} and {opt boxwidth()} added.
 - {bf:1.21} : Bug fixes for 1.2. {opt labcolor()} added.
 - {bf:1.2}  : Unbalanced in-coming and out-going groups now properly displace. Groups ending and starting in the middle now allowed.
 - {bf:1.1}  : Enhancements. {opt valformat()} renamed to {opt format()}. {opt offset} added to displace x-axis range.
@@ -119,8 +124,8 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.21
-This release : 15 Feb 2023
+Version      : {bf:sankey} v1.3
+This release : 26 Feb 2023
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey

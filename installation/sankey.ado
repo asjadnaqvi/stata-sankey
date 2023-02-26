@@ -1,18 +1,25 @@
-*! sankey v1.21 (02 Feb 2023)
+*! sankey v1.3 (26 Feb 2023)
 *! Asjad Naqvi 
 
+*v1.3  26 Feb 2023: sortby() option added. Node bundling.
 *v1.21 15 Feb 2023: labcolor() added, gap fix
-*v1.2  02 Feb 2023: Outgoing flows now properly displace. Categories going to empty and starting from empty added. Various fixes
+*v1.2  02 Feb 2023: Outgoing flows now displace properly. Categories going to empty and starting from empty added. Various fixes
 *v1.1  13 Dec 2022: valformat() renamed to format(). offset() option added to displaced x-axis for rotated labels.
 *v1.0  08 Dec 2022: Beta release.
 
-* A detailed Medium guide on Sankey diagrams is here:
-* https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1
+// ToDo:
+// flatten layers for drawing.
+// add options to highlight certain streams
+// Add options to label layers at the bottom like in on the alluvial package.
+
+
+// A detailed Medium guide on Sankey diagrams is here:
+// https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1
 
 
 cap program drop sankey
 
-program sankey, // sortpreserve
+program sankey, sortpreserve
 
 version 15
  
@@ -22,6 +29,7 @@ version 15
 		[ VALSize(string)  VALCONDition(real 0) format(string) VALGap(string) NOVALues ]  ///
 		[ LWidth(string) LColor(string)  ]  ///
 		[ offset(real 0) LABColor(string) ]  ///  // added options v1.1
+		[ sortby(string) BOXWidth(string)	 ]  ///  // added options v1.3
 		[ title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)		] 
 		
 
@@ -55,23 +63,95 @@ preserve
 	summ x1, meanonly
 	replace x1 = x1 - r(min) // rebase to 0
 
-	
-	gen x2 = x1 + 1
+	sort x1
+
 	ren `from' 		lab1
 	ren `to'		lab2
 	ren `varlist' 	val1
 	gen val2 	=   val1
 
 	
-	// check point
+	gen x2 = x1 + 1
+	
+	gen order1 = .
+	gen order2 = .
+	
+	// add sorting routine here
+		
+		bysort lab1: egen l0total = sum(val1) if x1==0
+		
+		if "`sortby'" == "" | "`sortby'" == "value" {
+			sort x1 l0total lab1	// numerical
+		}
+		if "`sortby'" == "name" {
+			sort x1 lab1 lab2		// alphabetical
+		}
+		
+		summ x2, meanonly
+		local lastlvl = r(max)
+
+		// get the order of layer 0
+		egen tag1 = tag(lab1) if x2==1
+		recode tag1 (0=.) if x2!=1
+		gen sort1 = sum(tag1) if x2==1
+		replace order1 = sort1 if x2==1
+		drop tag1 sort1 l0total
+	
+		if "`sortby'" == "" | "`sortby'" == "value" {
+			sort x1 order1 val2		// numerical
+		}
+		if "`sortby'" == "name" {
+			sort x1 order1 lab2		// alphabetical
+		}
+	
+		// fix the remaining layers
+		levelsof x2, local(lvls)
+		local items = r(r)
+		
+
+			foreach x of numlist 1/`items' {
+			
+				local y = `x' + 1
+				
+				// group to0 to from0
+				egen tag`x' = tag(lab2) if x2==`x'
+				recode tag`x' (0=.) if x2!=`x'
+				gen sort`x' = sum(tag`x') if x2==`x'
+
+				
+				// pass to0 to from1
+				gen     name`x' = lab2 if x2==`x'
+				replace name`x' = lab1 if x2==`y'
+
+				if "`sortby'" == "" | "`sortby'" == "value" {
+					sort name`x' sort`x' val2	// numerical
+				}
+				if "`sortby'" == "name" {
+					sort name`x' sort`x' lab2	// alphabetical
+				}
+				
+				by name`x': replace sort`x' = sort`x'[1]
+
+				replace order2 = sort`x' if x2==`x'
+				replace order1 = sort`x' if x2==`y'
+				
+				drop name* tag* sort*
+			
+			}
+	
+
+	sort x1 order1 order2
+
+	// check for blank orders (this can occur if categories are starting in the middle)
+	replace order1 = order1[_n-1] + 1 if order1==.
 	
 	
-	sort x1 lab1 lab2  // this affects the draw order
+	// check point after sorting
 	gen id = _n
 	order id
 	
-	egen grp1 = group(x1 lab1)  // out grp by layer
-	egen grp2 = group(x1 lab2)  //  in grp by layer
+	egen grp1 = group(x1 order1)  // out grp by layer
+	egen grp2 = group(x1 order2)  //  in grp by layer
 
 
 	sort x1 grp1 grp2
@@ -80,27 +160,29 @@ preserve
 	sort x2 grp2 grp1
 	by x2: gen y2 = sum(val2)  // take cumulative sum of in val 
 
-	sort x1 lab1 lab2
+	sort x1 order1 order2
 	gen layer = x1 + 1
 	
 	
-	reshape long x val lab grp y , i(id layer) j(tt)
+	reshape long x val lab grp y order, i(id layer) j(tt)
 	drop tt
-		
+	
+
 	sort layer x y
 	by layer x: gen y1 = y[_n-1]
 	
 	recode y1 (.=0)
 	ren y y2
 
-	order layer grp id lab x y1 y2 val
+	order layer grp id order lab x y1 y2 val
 
     
 	// lines added below
 	drop grp
-	egen grp = group(lab)
+	egen grp = group(order)
 
 	order layer  id lab grp x y1 y2 val	
+	
 	
 	
 	//////////////////////////// alignment fix for varying group sizes
@@ -144,7 +226,7 @@ preserve
 				local outval = r(sum)
 
 				
-				if (`toval' > `outval') {
+				if (`toval' >= `outval') {
 					local off  = `toval' - `outval'  
 							
 					if !inlist(`togrp',`mark1') {
@@ -177,7 +259,7 @@ preserve
 	cap drop tag
 	egen tag = tag(layer x grp  )
 
-	sort layer x lab id 
+	sort layer x order id 
 	by layer x: replace tag = sum(tag)	
 	
 	
@@ -221,36 +303,36 @@ preserve
 		local right = `i' + 1
 
 			
-		levelsof lab if layer== `left', local(lleft)  // y:   to in the  first cut 
-		levelsof lab if layer==`right', local(lright) // x: from in the second cut
+		levelsof order if layer== `left', local(lleft)  // y:   to in the  first cut 
+		levelsof order if layer==`right', local(lright) // x: from in the second cut
 
 
 		foreach y of local lleft {  // left
 			foreach x of local lright {      // right
-
 			
 				if "`x'" == "`y'" {  // check if the groups are equal
 				
+					di "I am here"
 					// in layer range	
-					summ y1 if lab=="`x'" & layer==`left' & x==`left', meanonly   
-						local y1max =cond(r(N) > 0, `r(max)', 0)
-						local y1min =cond(r(N) > 0, `r(min)', 0)
-						
-					summ y2 if lab=="`x'" & layer==`left' & x==`left', meanonly   
-						local y2max =cond(r(N) > 0, `r(max)', 0)
-						local y2min =cond(r(N) > 0, `r(min)', 0)
+					summ y1 if order==`x' & layer==`left' & x==`left' 
+						local y1max = cond(r(N) > 0, r(max), 0)
+						local y1min = cond(r(N) > 0, r(min), 0)		
+
+					summ y2 if order==`x' & layer==`left' & x==`left', meanonly 
+						local y2max =cond(r(N) > 0, r(max), 0)
+						local y2min =cond(r(N) > 0, r(min), 0)
 						
 					local l1max = max(`y1max',`y2max')
 					local l1min = min(`y1min',`y2min')
 					
 					// out layer range		
-					summ y1 if lab=="`x'" & layer==`right' & x==`left', meanonly 
-						local y1max =cond(r(N) > 0, `r(max)', 0)
-						local y1min =cond(r(N) > 0, `r(min)', 0)
+					summ y1 if order==`x' & layer==`right' & x==`left', meanonly 
+						local y1max =cond(r(N) > 0, r(max), 0)
+						local y1min =cond(r(N) > 0, r(min), 0)
 
-					summ y2 if lab=="`x'" & layer==`right' & x==`left', meanonly 
-						local y2max =cond(r(N) > 0, `r(max)', 0)
-						local y2min =cond(r(N) > 0, `r(min)', 0)	
+					summ y2 if order==`x' & layer==`right' & x==`left', meanonly 
+						local y2max =cond(r(N) > 0, r(max), 0)
+						local y2min =cond(r(N) > 0, r(min), 0)	
 						
 					local l2max = max(`y1max',`y2max')
 					local l2min = min(`y1min',`y2min')				
@@ -260,19 +342,20 @@ preserve
 					
 					if (`l1max' - `l1min') >= (`l2max' - `l2min') {
 						local displace = ((`l1max' - `l1min') - (`l2max' - `l2min')) / 2
-						replace y1t = y1 + `displace' + `l1min' - `l2min' if layer==`right' & lab=="`x'" & x==`left' 			
-						replace y2t = y2 + `displace' + `l1min' - `l2min' if layer==`right' & lab=="`x'" & x==`left' 
+						replace y1t = y1 + `displace' + `l1min' - `l2min' if layer==`right' & order==`x' & x==`left' 			
+						replace y2t = y2 + `displace' + `l1min' - `l2min' if layer==`right' & order==`x' & x==`left' 
 					}
 					else {
 						local displace = ((`l2max' - `l2min') - (`l1max' - `l1min')) / 2
-						replace y1t = y1 + `displace' + `l2min' - `l1min' if layer==`left' & lab=="`x'" & x==`left' 			
-						replace y2t = y2 + `displace' + `l2min' - `l1min' if layer==`left' & lab=="`x'" & x==`left' 
+						replace y1t = y1 + `displace' + `l2min' - `l1min' if layer==`left' & order==`x' & x==`left' 			
+						replace y2t = y2 + `displace' + `l2min' - `l1min' if layer==`left' & order==`x' & x==`left' 
 					}
 				}
 			}	
 		}
 	}
 
+	
 	replace y1t = y1 if y1t==.
 	replace y2t = y2 if y2t==.
 
@@ -413,25 +496,25 @@ preserve
 	***** mid points for wedges
 			 
 	cap drop tag
-	encode lab, gen(order)
-	egen tag = tag(x order)
+	encode lab, gen(labels)
+	egen tag = tag(x labels)
 			 
 	cap gen midy = .
 
 	levelsof x, local(lvls)
 	foreach x of local lvls {
 
-	levelsof order	if x ==`x', local(odrs)
+	levelsof labels	if x ==`x', local(odrs)
 
 		foreach y of local odrs {
 		
-		summ y1 if x==`x' & order==`y', meanonly
+		summ y1 if x==`x' & labels==`y', meanonly
 		local min = r(min)
 		
-		summ y2 if x==`x' & order==`y', meanonly
+		summ y2 if x==`x' & labels==`y', meanonly
 		local max = r(max)
 		
-		replace midy = (`min' + `max') / 2 if tag==1 & x==`x' & order==`y'
+		replace midy = (`min' + `max') / 2 if tag==1 & x==`x' & labels==`y'
 		
 		}
 	}
@@ -476,10 +559,12 @@ preserve
 	*** fix boxes
 						
 	sort layer grp x y1 y2
-	bysort x order: egen ymin = min(y1)
-	bysort x order: egen ymax = max(y2)
-			 
-	egen wedge = group(x order)		 
+	bysort x labels: egen ymin = min(y1)
+	bysort x labels: egen ymax = max(y2)
+	
+	
+	
+	egen wedge = group(x labels)		 
 	egen tagw = tag(wedge)		
 			
 
@@ -508,6 +593,8 @@ preserve
 
 	// boxes
 
+	if "`boxwidth'"    == "" local boxwidth 3.2
+	
 	local boxes
 
 	levelsof wedge, local(lvls)
@@ -526,15 +613,15 @@ preserve
 		}
 		
 		colorpalette `palette' , n(`items') nograph `poptions'
-		local boxes `boxes' (rspike ymin ymax x if wedge==`x' & tagw==1, lcolor("`r(p`clr')'%100") lw(3.2)) ||
+		local boxes `boxes' (rspike ymin ymax x if wedge==`x' & tagw==1, lcolor("`r(p`clr')'%100") lw(`boxwidth')) ||
 		
 	}
 
 	// arcs
 
-	if "`lcolor'"  == "" local lcolor white
+	if "`lcolor'"    == "" local lcolor white
 	if "`labcolor'"  == "" local labcolor black
-	if "`lwidth'"  == "" local lwidth none	
+	if "`lwidth'"    == "" local lwidth none	
 	
 	levelsof wedge
 	local groups = r(r)
@@ -568,17 +655,12 @@ preserve
 	if "`labsize'"  	== "" local labsize 2	
 	if "`labposition'"  == "" local labposition 0	
 	if "`labgap'" 		== "" local labgap 0
-	
-	if "`valsize'"  == "" local valsize 1.5
-
-	*local labcon "if val >= `valcondition'"
-
-	
-	if "`format'" == "" local format "%12.0f"	
+	if "`valsize'"  	== "" local valsize 1.5
+	if "`valgap'" 	 	== "" local valgap 2
+	if "`format'" 		== "" local format "%12.0f"	
 	format val `format'
 	
-	if "`valgap'" 	 == "" local valgap 2
-	
+
 	summ ymax, meanonly
 	local yrange = r(max)
 	
