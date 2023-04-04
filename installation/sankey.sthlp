@@ -14,7 +14,7 @@
                 {cmd:[} 
                   {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) 
                   {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al}
-                  {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:str}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues}
+                  {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:num}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues}
                   {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmd:sortby}({it:value}|{it:name}) {cmdab:boxw:idth}({it:str})
                   {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) 
                 {cmd:]}
@@ -29,28 +29,29 @@ Please report errors/bugs/enhancement requests on {browse "https://github.com/as
 {synopthdr}
 {synoptline}
 
-{p2coldent : {opt sankey value, from() to() by()}}The command requires a numeric variable that contains the values. Both {cmd:from()} and {cmd:to()} can contain numeric, labeled or string variables.
-The {cmd:by()} variable contains a layer variable which ideally should be numeric. If strings are used, please make sure spellingd are consitent for categories across layers.{p_end}
+{p2coldent : {opt sankey value, from() to() by()}}The command requires a numeric variable. Both {cmd:from()} and {cmd:to()} can contain numeric, labeled or string variables.
+The {cmd:by()} variable contains a layer variable which ideally should be numeric. If strings are used, then 
+please make sure that the spellings for categories are consistent since each unique name is assumed a separate category.{p_end}
 
 {p2coldent : {opt palette(name)}}Color name is any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette tableau:{it:tableau}}.{p_end}
 
 {p2coldent : {opt sortby(option)}}Users can sort the data by {ul:value} or {ul:name}. The {opt sortby(value)} arranges the data using a numerical sort, while {opt sortby(name)}
 arranges them alphabetically.{p_end}
 
-{p2coldent : {opt colorby(option)}}Users can color the diagram by {ul:layer} or {ul:level}. The {it:layer} option, determined by the {cmd:by()} variable, will give each 
-layer a unique color. The {it:level} option will give each category a unique color, even if they exist across multiple layers.
-The default value is {cmd:colorby(level)}.{p_end}
+{p2coldent : {opt colorby(option)}}Users can color the diagram by {ul:layer} instead of the default where each unique name is taken as a unique color category.
+The {it:layer} option is determined by the {cmd:by()} variable, and it will give each 
+layer a unique color.{p_end}
 
-{p2coldent : {opt smooth(num)}}This option allows users to smooth out the spider plots connections. It can take on values between [1,8], where 1 is for straight lines, and 8 is stepwise.
-The middle range between 3-6 gives more curvy links. The default value is {cmd:smooth(4)}.{p_end}
+{p2coldent : {opt smooth(num)}}This option allows users to smooth out the spider plots connections. It can take on values between 1 to 8, where 1 is for straight lines, while 
+is 8 shows steps. The middle range between 3-6 gives more curvy links. The default value is {opt smooth(4)}.{p_end}
 
-{p2coldent : {opt gap(num)}}Gap between categories is defined as a percentage of the highest y-axis range across the layers. Default value is {cmd:gap(2)} for 2%.{p_end}
+{p2coldent : {opt gap(num)}}Gap between categories is defined as a percentage of the highest y-axis range across the layers. Default value is {opt gap(2)} for 2%.{p_end}
 
 {p2coldent : {opt recen:ter(option)}}Users can recenter the graph {ul:middle} ({ul:mid} or {ul:m} also accepted), {ul:top} (or {ul:t}), or {ul:bottom} (or {ul:bot} or {ul:b}).
-This is mostly an aesthetic choice. Default value is {cmd:recen(mid)}.{p_end}
+This is mostly an aesthetic choice. Default value is {opt recen(mid)}.{p_end}
 
 {p2coldent : {opt alpha(num)}}The transparency control of the area fills. The value ranges from 0-100, where 0 is no fill and 100 is fully filled.
-Default value is {cmd:alpha(75)} for 75% transparency.{p_end}
+Default value is {opt alpha(75)} for 75% transparency.{p_end}
 
 {p2coldent : {opt lw:idth(str)}}The outline width of the area fills. Default is {cmd:lw(none)}. This implies that they are turned off by default.{p_end}
 
@@ -73,16 +74,15 @@ If the label angle is change to horitzontal or the label position is changed fro
 
 {p2coldent : {opt vals:ize(str)}}The size of the displayed values. Default is {cmd:vals(1.5)}.{p_end}
 
-{p2coldent : {opt valcond:ition(str)}}The condition to display the values.
-This option can be used to reduce the number of labels displayed especially if there are a lot of very small categories than can make the figure look messy.
-The way to use this option is to define an if condition, e.g. {cmd:valcond(>=100)}, will only show values above 100.{p_end}
+{p2coldent : {opt valcond:ition(num)}}This option can be specified to only display values >={it:num}, e.g. {opt valcond(100)} implies >= 100.
+This option can be used to reduce the number of labels displayed especially if there are many very small categories that make the figure look messy.{p_end}
 
-{p2coldent : {opt format(str)}}The format of the displayed values. Default is {cmd:format(%12.0f)}.{p_end}
+{p2coldent : {opt format(str)}}The format of the displayed values. Default is {opt format(%12.0f)}.{p_end}
 
 {p2coldent : {opt noval:ues}}Hide the values.{p_end}
 
 {p2coldent : {opt offset(num)}}The value, in percentage of x-axis width, to extend the x-axis on the right-hand side. Default is {cmd:offset(0)}.
-This option is highly useful if labels are rotated and positioned, for example, at 3 o'clock.{p_end}
+This option is highly useful especially if labels are rotated with custom positions.{p_end}
 
 {p2coldent : {opt title()}, {opt subtitle()}, {opt note()}}These are standard twoway graph options.{p_end}
 
@@ -97,7 +97,7 @@ This is particularly helpful if several layers are plotted.{p_end}
 
 {title:Dependencies}
 
-The {browse "http://repec.sowi.unibe.ch/stata/palettes/index.html":palette} package (Jann 2018, Jann 2022) is required for {cmd:sankey}:
+The {browse "http://repec.sowi.unibe.ch/stata/palettes/index.html":palette} package (Jann 2018, 2022) is required for {cmd:sankey}:
 
 {stata ssc install palettes, replace}
 {stata ssc install colrspace, replace}
