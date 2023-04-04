@@ -6,7 +6,7 @@
 
 ---
 
-# sankey v1.3
+# sankey v1.31
 
 This package allows us to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) (October 2021).
 
@@ -21,7 +21,7 @@ SSC (**v1.3**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.3**):
+GitHub (**v1.31**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -204,6 +204,9 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+**v1.31 (04 Apr 2023)**
+- Fix the color of categories. v1.3 was resulting in wrong color assignments.
 
 **v1.3 (26 Feb 2023)**
 - Node bundling added which align nodes in front of each other. This looks better especially if flows are passing through certain nodes.

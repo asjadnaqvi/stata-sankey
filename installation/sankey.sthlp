@@ -1,7 +1,7 @@
 {smcl}
-{* 26Feb2022}{...}
+{* 04Apr2023}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.3 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.31 (GitHub)}}
 
 {hline}
 
@@ -34,7 +34,7 @@ The {cmd:by()} variable contains a layer variable which ideally should be numeri
 
 {p2coldent : {opt palette(name)}}Color name is any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette tableau:{it:tableau}}.{p_end}
 
-{p2coldent : {opt sortby(option)}}Users can sort the data by {ul:value} or {ul:name}. The {opt sortby(value}} arranges the data using a numerical sort, while {opt sortby(name}}
+{p2coldent : {opt sortby(option)}}Users can sort the data by {ul:value} or {ul:name}. The {opt sortby(value)} arranges the data using a numerical sort, while {opt sortby(name)}
 arranges them alphabetically.{p_end}
 
 {p2coldent : {opt colorby(option)}}Users can color the diagram by {ul:layer} or {ul:level}. The {it:layer} option, determined by the {cmd:by()} variable, will give each 
@@ -124,8 +124,8 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.3
-This release : 26 Feb 2023
+Version      : {bf:sankey} v1.31
+This release : 04 Apr 2023
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
@@ -147,8 +147,9 @@ Please submit bugs, errors, feature requests on {browse "https://github.com/asja
 
 {p 4 8 2}Jann, B. (2022). {browse "https://ideas.repec.org/p/bss/wpaper/43.html":Color palettes for Stata graphics: an update}. University of Bern Social Sciences Working Papers No. 43. 
 
+
 {title:Other visualization packages}
 
 {psee}
-    {helpb alluvial}, {helpb circlebar}, {helpb spider}, {helpb treemap}, {helpb circlepack}, {helpb arcplot}, {helpb treecluster}, {helpb sunburst}
-	{helpb marimekko}, {helpb bimap}, {helpb joyplot}, {helpb streamplot}, {helpb delaunay}, {helpb clipgeo}, {helpb schemepack}
+    {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb joyplot}, 
+	{helpb marimekko}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb streamplot}, {helpb sunburst}, {helpb treecluster}, {helpb treemap}

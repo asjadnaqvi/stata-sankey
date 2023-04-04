@@ -1,6 +1,7 @@
-*! sankey v1.3 (26 Feb 2023)
+*! sankey v1.31 (04 Apr 2023)
 *! Asjad Naqvi 
 
+*v1.31 04 Apr 2023: fix to how colors are defined.
 *v1.3  26 Feb 2023: sortby() option added. Node bundling.
 *v1.21 15 Feb 2023: labcolor() added, gap fix
 *v1.2  02 Feb 2023: Outgoing flows now displace properly. Categories going to empty and starting from empty added. Various fixes
@@ -567,7 +568,9 @@ preserve
 	egen wedge = group(x labels)		 
 	egen tagw = tag(wedge)		
 			
-
+	egen clrgrp = group(lab)
+	
+	
 	********************
 	*** final plot   ***
 	********************
@@ -608,7 +611,7 @@ preserve
 			local clr = r(mean) + 1
 		}
 		else {  				// by category
-			summ order if wedge==`x', meanonly
+			summ clrgrp if wedge==`x', meanonly
 			local clr = r(mean) 
 		}
 		
@@ -638,7 +641,7 @@ preserve
 		}
 		else {  					// by category
 			qui sum x if id==`x'
-			qui sum order if id==`x' & x == r(min)
+			qui sum clrgrp if id==`x' & x == r(min)
 		}
 		
 		if r(N) > 0 {
