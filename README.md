@@ -8,7 +8,7 @@
 
 # sankey v1.31
 
-This package allows us to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) (October 2021).
+This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
 
 ## Installation
@@ -56,7 +56,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.3** is as follows:
+The syntax for **v1.31** is as follows:
 
 ```applescript
 sankey value [if] [in], from(var) to(var) by(var) 
