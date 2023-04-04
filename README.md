@@ -206,7 +206,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 ## Change log
 
 **v1.31 (04 Apr 2023)**
-- Fix the color of categories. v1.3 was resulting in wrong color assignments.
+- Fixed the color of categories. Previous version was resulting in wrong color assignments.
 
 **v1.3 (26 Feb 2023)**
 - Node bundling added which align nodes in front of each other. This looks better especially if flows are passing through certain nodes.
