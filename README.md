@@ -63,7 +63,7 @@ sankey value [if] [in], from(var) to(var) by(var)
                 [ 
                   palette(str) colorby(layer|level) smooth(1-8) gap(num) recenter(mid|bot|top) 
                   labangle(str) labsize(str) labposition(str) labgap(str) showtotal
-                  valsize(str) valcondition(str) format(str) valgap(str) novalues
+                  valsize(str) valcondition(num) format(str) valgap(str) novalues
                   lwidth(str) lcolor(str) alpha(num) offset(num) sortby(value|name) boxwidth(str)
                   title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) 
                 ]
@@ -192,7 +192,7 @@ sankey value, from(source) to(destination) by(layer) showtot
 
 ```
 sankey value, from(source) to(destination) by(layer) palette(CET C7) ///
-	valcond(>100) valsize(1.6) showtotal ///
+	valcond(100) valsize(1.6) showtotal ///
 	xsize(2) ysize(1) lc(white) lw(0.1) 
 ```
 
