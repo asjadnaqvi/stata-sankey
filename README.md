@@ -6,7 +6,7 @@
 
 ---
 
-# sankey v1.31
+# sankey v1.4
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
@@ -15,13 +15,13 @@ This package allows users to draw Sankey plots in Stata. It is based on the [San
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-SSC (**v1.3**):
+SSC (**v1.31**):
 
 ```
 ssc install sankey, replace
 ```
 
-GitHub (**v1.31**):
+GitHub (**v1.4**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -59,14 +59,14 @@ graph set window fontface "Arial Narrow"
 The syntax for **v1.31** is as follows:
 
 ```applescript
+
 sankey value [if] [in], from(var) to(var) by(var) 
-                [ 
-                  palette(str) colorby(layer|level) smooth(1-8) gap(num) recenter(mid|bot|top) 
-                  labangle(str) labsize(str) labposition(str) labgap(str) showtotal
-                  valsize(str) valcondition(num) format(str) valgap(str) novalues
-                  lwidth(str) lcolor(str) alpha(num) offset(num) sortby(value|name) boxwidth(str)
-                  title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) 
-                ]
+            [ palette(str) colorby(layer|level) colorvar(var) colorvarmiss(str) colorboxmiss(str)
+              smooth(1-8) gap(num) recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num)
+              labangle(str) labsize(str) labposition(str) labgap(str) showtotal
+              valsize(str) valcondition(num) format(str) valgap(str) novalues
+              lwidth(str) lcolor(str) alpha(num) offset(num) sortby(value|name) boxwidth(str)
+              title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) ]
 ```
 
 See the help file `help sankey` for details.
@@ -86,7 +86,7 @@ where `var1` and `var2` are the string source and destination variables respecti
 Get the example data from GitHub:
 
 ```
-use "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sankey2.dta?raw=true", clear
+import excel using "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sankey_example2.xlsx?raw=true", clear first
 ```
 
 Let's test the `sankey` command:
@@ -153,10 +153,47 @@ sankey value, from(source) to(destination) by(layer) noval showtot
 <img src="/figures/sankey5.png" height="600">
 
 
+### Sort
+
+```
+sankey value, from(source) to(destination) by(layer) sortby(name)
+```
+
+<img src="/figures/sankey5_1.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) sortby(value)
+```
+
+<img src="/figures/sankey5_2.png" height="600">
+
+### boxwidth
+
+```
+sankey value, from(source) to(destination) by(layer) boxwid(5)
+```
+
+<img src="/figures/sankey5_3.png" height="600">
+
+### valcond
+
+```
+sankey value, from(source) to(destination) by(layer) valcond(200)
+```
+
+<img src="/figures/sankey5_4.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) valcond(300)
+```
+
+<img src="/figures/sankey5_5.png" height="600">
+
+
 ### Palettes
 
 ```
-sankey value, from(source) to(destination) by(layer) palette(CET C7)
+sankey value, from(source) to(destination) by(layer) palette(CET C6)
 ```
 
 <img src="/figures/sankey6.png" height="600">
@@ -167,33 +204,80 @@ sankey value, from(source) to(destination) by(layer) colorby(level)
 
 <img src="/figures/sankey6_1.png" height="600">
 
-### Label rotations and offset (v1.1)
+
+### color by variable (v1.4)
 
 ```
-sankey value, from(source) to(destination) by(layer) noval showtot palette(CET C6) ///
-	laba(0) labpos(3) labg(-1) offset(10)
+gen trace1 = 1 if source=="App"
+
+sankey value, from(source) to(destination) by(layer) colorvar(trace1)
 ```
 
 <img src="/figures/sankey6_2.png" height="600">
 
+```
+cap drop trace2
+gen trace2 = .
+replace trace2 = 1 if  source=="App" & destination=="App" & layer==0
+replace trace2 = 2 if  source=="App" & destination=="App" & layer==1
+replace trace2 = 3 if  source=="App" & destination=="App" & layer==2
+replace trace2 = 4 if  source=="App" & destination=="Total" & layer==3
 
-### Unbalanced sankeys (v1.2)
+sankey value, from(source) to(destination) by(layer) colorvar(trace2)
+```
 
+<img src="/figures/sankey6_3.png" height="600">
 
 ```
-import excel using "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sankey_simple.xlsx?raw=true", first clear
-
-sankey value, from(source) to(destination) by(layer) showtot 
+sankey value, from(source) to(destination) by(layer) colorvar(trace2) palette(Oranges)
 ```
 
-<img src="/figures/sankey_unbalanced.png" height="600">
+<img src="/figures/sankey6_4.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) colorvar(trace2) palette(Blues) ///
+ colorvarmiss(gs13) colorboxmiss(gs13)
+```
+
+<img src="/figures/sankey6_5.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) colorvar(trace2) ///
+palette(blue*0.1 blue*0.3 blue*0.5 blue*0.7) colorvarmiss(gs13) colorboxmiss(gs13)
+```
+
+<img src="/figures/sankey6_6.png" height="600">
+
+### column titles
+
+```
+sankey value, from(source) to(destination) by(layer) ctitles(Cat1 Cat2 Cat3 Cat4 Cat5)
+```
+
+<img src="/figures/sankey6_7.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) ctitles(Cat1 Cat2 Cat3 Cat4 Cat5) ctg(-100)
+```
+
+<img src="/figures/sankey6_8.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) ctitles("Cat 1" "Cat 2" "Cat 3" "Cat 4" "Cat 5") ctg(-100)
+```
+
+<img src="/figures/sankey6_9.png" height="600">
+
+
 
 ### All together
 
 ```
-sankey value, from(source) to(destination) by(layer) palette(CET C7) ///
-	valcond(100) valsize(1.6) showtotal ///
-	xsize(2) ysize(1) lc(white) lw(0.1) 
+sankey value, from(source) to(destination) by(layer) palette(CET C6) alpha(60) ///
+	labs(2.5) laba(0) labpos(3) labg(-1) offset(5)  noval showtot ///
+	ctitles("Cat 1" "Cat 2" "Cat 3" "Cat 4" "Cat 5") ctg(-100) cts(3) ///
+	title("My sankey plot", size(6)) note("Made with the #sankey package.", size(2.2)) ///
+	xsize(2) ysize(1)
 ```
 
 <img src="/figures/sankey7.png" height="500">
@@ -204,6 +288,12 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+** v1.4 (23 Apr 2023)**
+- Fixed major bugs with unbalanced panels.
+- Added column title options.
+- Added option to draw colors by variables.
+- Several bug fixes and improvements to the code.
 
 **v1.31 (04 Apr 2023)**
 - Fixed the color of categories. Previous version was resulting in wrong color assignments.
