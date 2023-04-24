@@ -280,7 +280,7 @@ sankey value, from(source) to(destination) by(layer) palette(CET C6) alpha(60) /
 	xsize(2) ysize(1)
 ```
 
-<img src="/figures/sankey7.png" height="500">
+<img src="/figures/sankey7.png" height="400">
 
 ## Feedback
 
