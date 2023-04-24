@@ -56,7 +56,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.31** is as follows:
+The syntax for **v1.4** is as follows:
 
 ```applescript
 
@@ -289,7 +289,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 ## Change log
 
-** v1.4 (23 Apr 2023)**
+**v1.4 (23 Apr 2023)**
 - Fixed major bugs with unbalanced panels.
 - Added column title options.
 - Added option to draw colors by variables.
