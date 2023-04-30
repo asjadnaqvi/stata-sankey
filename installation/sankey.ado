@@ -1,6 +1,7 @@
-*! sankey v1.4 (23 Apr 2023)
+*! sankey v1.5 (30 Apr 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+*v1.5  (30 Apr 2023): add labprop, titleprop, labscale, novalright novalleft, sortby(, reverse) options, nolab
 *v1.4  (23 Apr 2023): fix unbalanced. fixed gaps. Added column labels. Add custom color option.
 *v1.31 (04 Apr 2023): fix to how colors are defined.
 *v1.3  (26 Feb 2023): sortby() option added. Node bundling.
@@ -21,13 +22,14 @@ program sankey, sortpreserve
 version 15
  
 	syntax varlist(numeric max=1) [if] [in], From(varname) To(varname) by(varname) ///
-		[ palette(string) smooth(numlist >=1 <=8) gap(real 5) RECENter(string) colorby(string)  alpha(real 75) ]  ///
+		[ palette(string) smooth(numlist >=1 <=8) gap(real 5) RECENter(string) colorby(string) alpha(real 75) ]  ///
 		[ LABAngle(string) LABSize(string) LABPOSition(string) LABGap(string) SHOWTOTal  ] ///
 		[ VALSize(string)  VALCONDition(real 0) format(string) VALGap(string) NOVALues ]  ///
 		[ LWidth(string) LColor(string)  	 ]  ///
 		[ offset(real 0) LABColor(string) 	 ]  ///  // added v1.1
 		[ sortby(string) BOXWidth(string)	 ]  ///  // added v1.3
 		[ wrap(real 7) CTITLEs(string asis) CTGap(real -5) CTSize(real 2.5) colorvar(varname) colorvarmiss(string) colorboxmiss(string)  ] ///  // v1.4 options
+		[ valprop labprop labscale(real 0.3333) NOVALRight NOVALLeft NOLABels ]      ///  // v1.5
 		[ title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)		] 
 		
 
@@ -47,6 +49,11 @@ version 15
 		di as err "Both colorby() and colorvar() are not allowed."
 		exit 198
 	}
+	
+	if "`novalleft'" != "" & "`novalright'" != "" {
+		di as err "Both {it:novalleft} and {it:novalright} are not allowed. If you want to hide values use the {it:novalues} option instead."
+		exit 198
+	}	
 	
 	if "`colorvar'" != "" {
 		tempvar _temp
@@ -155,11 +162,40 @@ preserve
 				gen     name`x' = lab2 if x2==`x'
 				replace name`x' = lab1 if x2==`y'
 
-				if "`sortby'" == "" | "`sortby'" == "value" {
+				
+						
+				
+				if "`sortby'" == "" {
 					sort name`x' sort`x' val2	// numerical
 				}
-				if "`sortby'" == "name" {
-					sort name`x' sort`x' lab2	// alphabetical
+				else {
+					tokenize "`sortby'", p(",")
+					local stype  `1'
+					local srev   `3'	
+					
+					
+					if ("`srev'" != "" & "`srev'" != "reverse") {
+						di as error "Valid options are sortby(name, reverse) or  sortby(value, reverse)."
+						exit 
+					}
+					
+					if "`stype'" == "value" {
+						if "`srev'" != "reverse" {
+							sort name`x' sort`x' val2	// numerical
+						}
+						else {
+							gsort name`x' sort`x' -val2	// numerical reverse
+						}
+					}
+					
+					if "`stype'" == "name" {
+						if "`srev'" != "reverse" {
+							sort name`x' sort`x' lab2	// alphabetical
+						}
+						else {
+							gsort name`x' sort`x' -lab2	// alphabetical reverse
+						}
+					}
 				}
 				
 				by name`x': replace sort`x' = sort`x'[1]
@@ -192,7 +228,6 @@ preserve
 	// check point after sorting
 	gen id = _n
 	order id
-	
 	
 	
 	egen grp1 = group(x1 order1)  // out grp by layer
@@ -288,8 +323,6 @@ preserve
 		}	
 	}
 
-	
-	
 	
 	//// add gaps
 	
@@ -760,6 +793,9 @@ preserve
 	}
 	
 
+
+	
+	
 	**** PLOT EVERYTHING ***
 	
 	if "`labangle'" 	== "" local labangle 90
@@ -771,27 +807,97 @@ preserve
 	if "`format'" 		== "" local format "%12.0f"	
 	format val `format'
 	
+	
 
 	summ ymax, meanonly
 	local yrange = r(max)
 	
-	if "`showtotal'" != "" {
-		gen lab2 = lab + " (" + string(sums, "`format'") + ")" if tag==1
-	}
-	else {
-		gen lab2 = lab if tag==1
-	}
+
 	
 	
 	*local wrap2 = `wrap' + 2
 	*replace lab2 = substr(lab2, 1, `wrap') + "`=char(10)`=char(39)'" + substr(lab2, `wrap2', .)  if tag==1
+
+	**** arc labels
+	
+	if "`valprop'" != "" {
+		summ val if tag==1, meanonly
+		gen labwgt = `valsize' * (val / r(max))^`labscale' if midp!=.
+	}
+	else {
+		gen labwgt = 1 if midp!=.
+	}	
 	
 	if "`novalues'" == "" {
-		local values `values' (scatter midp   x    if val >= `valcondition', msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(3) mlabgap(`valgap') mlabcolor(`labcolor')) ///
-		
-		local values `values' (scatter midpin xin  if val >= `valcondition', msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(9) mlabgap(`valgap') mlabcolor(`labcolor')) ///
-		
+		if "`valprop'" == "" {
+			
+			if  "`novalleft'" == "" {
+				local values `values' (scatter midp   x    if val >= `valcondition', msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(3) mlabgap(`valgap') mlabcolor(`labcolor')) ///
+			
+			}
+			
+			if  "`novalright'" == "" {
+				local values `values' (scatter midpin xin  if val >= `valcondition', msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(9) mlabgap(`valgap') mlabcolor(`labcolor')) ///
+			
+			}
+		}
+		else {
+			
+			levelsof id, local(lvls)
+			
+			foreach x of local lvls {
+				summ labwgt if id==`x', meanonly
+				local labsz = r(mean)
+			
+				if  "`novalleft'" == "" {
+					local values `values' (scatter midp   x    if val >= `valcondition' & id==`x', msymbol(none) mlabel(val) mlabsize(`labsz') mlabpos(3) mlabgap(`valgap') mlabcolor(`labcolor')) ///
+				
+				}
+			
+				if  "`novalright'" == "" {
+					local values `values' (scatter midpin xin  if val >= `valcondition' & id==`x', msymbol(none) mlabel(val) mlabsize(`labsz') mlabpos(9) mlabgap(`valgap') mlabcolor(`labcolor')) ///
+				
+				}
+			}
+			
+		}		
 	}
+
+	
+	**** box labels
+	
+	if "`nolabels'" == "" {
+		if "`showtotal'" != "" {
+			gen lab2 = lab + " (" + string(sums, "`format'") + ")" if tag==1
+		}
+		else {
+			gen lab2 = lab if tag==1
+		}
+		
+		
+		if "`labprop'" != "" {
+			summ sums if tag==1, meanonly
+			gen titlewgt = `valsize' * (sums / r(max))^`labscale' if tag==1
+			
+			levelsof id, local(lvls)
+			
+			foreach x of local lvls {
+				summ titlewgt if id==`x', meanonly
+				local titlez = r(mean)
+				
+				local boxlabel `boxlabel' (scatter midy x if tag==1 & val >= `valcondition' & id==`x',  msymbol(none) mlabel(lab2) mlabsize(`titlez') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) ///
+			
+			}
+			
+		}
+		else {
+			
+			local boxlabel (scatter midy x if tag==1 & val >= `valcondition',  msymbol(none) mlabel(lab2) mlabsize(`labsize') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) ///
+			
+		}	
+	}
+	
+	**** column labels 
 	
 	if `"`ctitles'"' != "" {
 		local lvllab (scatter title_y title_x, msymbol(none) mlabel(title_name) mlabpos(0) mlabsize(`ctsize')) ///
@@ -810,7 +916,7 @@ preserve
 	twoway ///
 		`shapes' ///
 		`boxes'  ///
-			(scatter midy   x if tag==1 & val >= `valcondition',  msymbol(none) mlabel(lab2) mlabsize(`labsize') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) ///
+			`boxlabel' ///
 			`values' ///
 			`lvllab' ///
 			, ///

@@ -6,7 +6,7 @@
 
 ---
 
-# sankey v1.4
+# sankey v1.5
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
@@ -21,7 +21,7 @@ SSC (**v1.31**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.4**):
+GitHub (**v1.5**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -56,17 +56,18 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.4** is as follows:
+The syntax for **v1.5** is as follows:
 
 ```applescript
-
 sankey value [if] [in], from(var) to(var) by(var) 
             [ palette(str) colorby(layer|level) colorvar(var) colorvarmiss(str) colorboxmiss(str)
               smooth(1-8) gap(num) recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num)
               labangle(str) labsize(str) labposition(str) labgap(str) showtotal
               valsize(str) valcondition(num) format(str) valgap(str) novalues
-              lwidth(str) lcolor(str) alpha(num) offset(num) sortby(value|name) boxwidth(str)
+              labprop titleprop labscale(num) novalright novalleft nolabels
+              lwidth(str) lcolor(str) alpha(num) offset(num) sortby(value|name [, reverse]) boxwidth(str)
               title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) ]
+
 ```
 
 See the help file `help sankey` for details.
@@ -162,10 +163,22 @@ sankey value, from(source) to(destination) by(layer) sortby(name)
 <img src="/figures/sankey5_1.png" height="600">
 
 ```
+sankey value, from(source) to(destination) by(layer) sortby(name, reverse)
+```
+
+<img src="/figures/sankey5_1_1.png" height="600">
+
+```
 sankey value, from(source) to(destination) by(layer) sortby(value)
 ```
 
 <img src="/figures/sankey5_2.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) sortby(value, reverse)
+```
+
+<img src="/figures/sankey5_2_1.png" height="600">
 
 ### boxwidth
 
@@ -248,7 +261,7 @@ palette(blue*0.1 blue*0.3 blue*0.5 blue*0.7) colorvarmiss(gs13) colorboxmiss(gs1
 
 <img src="/figures/sankey6_6.png" height="600">
 
-### column titles
+### column titles (v1.4)
 
 ```
 sankey value, from(source) to(destination) by(layer) ctitles(Cat1 Cat2 Cat3 Cat4 Cat5)
@@ -269,6 +282,47 @@ sankey value, from(source) to(destination) by(layer) ctitles("Cat 1" "Cat 2" "Ca
 <img src="/figures/sankey6_9.png" height="600">
 
 
+### hide values and labels (v1.5)
+
+```
+sankey value, from(source) to(destination) by(layer) novalleft
+```
+
+<img src="/figures/sankey8_1.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) novalright
+```
+
+<img src="/figures/sankey8_2.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) noval
+```
+
+<img src="/figures/sankey8_3.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) nolabels
+```
+
+<img src="/figures/sankey8_4.png" height="600">
+
+
+### proportional values and labels (v1.5)
+
+
+```
+sankey value, from(source) to(destination) by(layer) valprop vals(2) 
+```
+
+<img src="/figures/sankey9_1.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) labprop labs(2)
+```
+
+<img src="/figures/sankey9_2.png" height="600">
 
 ### All together
 
@@ -288,6 +342,12 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+**v1.5 (30 Apr 2023)**
+- Added `laprop`, `titleprop`, and `labscale()` for scaling values and labels.
+- Added `novalright`, `novalleft`, `nolabels` options.
+- Added `sortby(., reverse)` option.
+- Help file improved in its layout.
 
 **v1.4 (23 Apr 2023)**
 - Fixed major bugs with unbalanced panels.
