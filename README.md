@@ -6,7 +6,7 @@
 
 ---
 
-# sankey v1.5
+# sankey v1.51
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
@@ -21,7 +21,7 @@ SSC (**v1.5**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.5**):
+GitHub (**v1.51**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -56,7 +56,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.5** is as follows:
+The syntax for **v1.51** is as follows:
 
 ```applescript
 sankey value [if] [in], from(var) to(var) by(var) 
@@ -342,6 +342,9 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+**v1.51 (25 May 2023)**
+- Added background checks for `from()` and `to()` variable. This ensures that the code runs regardless of the variable types. Ideally both should be strings.
 
 **v1.5 (30 Apr 2023)**
 - Added `laprop`, `titleprop`, and `labscale()` for scaling values and labels.
