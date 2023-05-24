@@ -1,6 +1,7 @@
-*! sankey v1.5 (30 Apr 2023)
+*! sankey v1.51 (25 May 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+*v1.51 (25 May 2023): from/to string check. Help file updated.
 *v1.5  (30 Apr 2023): add labprop, titleprop, labscale, novalright novalleft, sortby(, reverse) options, nolab
 *v1.4  (23 Apr 2023): fix unbalanced. fixed gaps. Added column labels. Add custom color option.
 *v1.31 (04 Apr 2023): fix to how colors are defined.
@@ -72,7 +73,6 @@ version 15
 	// id    = sequence of points that form a shape.
 
 
-
 qui {
 preserve 	
 	
@@ -90,6 +90,25 @@ preserve
 	
 	
 	keep `varlist' `from' `to' `by' clrlvl
+	
+	
+	
+	// do the non-string check
+	foreach v in `from' `to' {
+		if substr("`: type `v''",1,3) != "str" {
+			if "`: value label `v' '" != "" { 	// has value label
+				decode `v', gen(`v'_temp)
+				drop `v'
+				ren `v'_temp `v'
+			}
+			else {								// has no value label
+				gen `v'_temp = string(`v')
+				drop `v'
+				ren `v'_temp `v'
+			}
+		}
+	}	
+	
 	
 	collapse (sum) `varlist' (mean) clrlvl , by(`from' `to' `by')
 	
@@ -125,8 +144,7 @@ preserve
 		summ x2, meanonly
 		local lastlvl = r(max)
 
-		
-		
+
 		// get the order of layer 0
 		egen tag1 = tag(lab1) if x2==1
 		recode tag1 (0=.) if x2!=1
@@ -245,17 +263,145 @@ preserve
 	
 	
 	reshape long x val lab grp y order, i(id layer) j(tt)
+	
+	
+	
 	drop tt
 	sort layer x y
+	
+	
 	by layer x: gen y1 = y[_n-1]
 	
 	recode y1 (.=0)
 	ren y y2
-	drop grp
 	
 	order layer  id lab x y1 y2 val	
+	drop grp
+	
+	
+
+	
+	// name sorting (work in progress)
+	
+	/*
+	if "`sortby'" == "name" {
+		
+		ren order order_old
+	
+	**** better to fix the order level here
+	
+		gen order = .
+		
+		// fix first out layer
+		sort layer x lab val
+		egen tag = tag(layer lab x) // if layer==1 
+		
+		replace order = sum(tag) if x==0
+
+		
+		// fix the first in layer
+		*drop tag
+		*replace order = sum(tag) if x==1 // & layer==1
+		
+		levelsof lab if x==1, local(lvls)
+		
+		local k = 1
+		foreach x of local lvls {
+			replace order = `k'  if x==1 & lab=="`x'"
+			local ++k
+		}
+		
+		levelsof lab if x==2, local(lvls)
+		
+		local k = 1
+		foreach x of local lvls {
+			replace order = `k'  if x==2 & lab=="`x'"
+			local ++k
+		}
+
+		levelsof lab if x==3, local(lvls)
+		
+		local k = 1
+		foreach x of local lvls {
+			replace order = `k'  if x==3 & lab=="`x'"
+			local ++k
+		}	
+		
+		levelsof lab if x==4, local(lvls)
+		
+		local k = 1
+		foreach x of local lvls {
+			replace order = `k'  if x==4 & lab=="`x'"
+			local ++k
+		}			
+		
+		/*
+		levelsof x, local(lvls)
+		local items = r(r)
+		
+		local k = 1
+		
+		
+		
+		
+		
+		foreach i of numlist 1/`items' {
+			*local j = `i' + 1		
+			di "`i'"
+			
+			levelsof 
+			
+			tab lab if x==`i'
+			
+			replace order = `k' if x==`i'
+			
+			local ++k
+			
+		}
+		*/
+		
+		drop tag
+	
+		sort layer x lab
+		by layer x: gen valtot = sum(val)
+		
+		ren y1 y1_old
+		ren y2 y2_old
+		
+		bysort layer x: gen y1 = valtot[_n-1]
+		recode y1 (.=0)
+		
+		gen y2 = valtot
+		
+		drop valtot
+		
+		
+		sort layer id x
+		
+		
+		*sort layer y1 x
+		
+
+		
+	}
+	
+	*ren val val_old
+	
+	*drop order_old
+
+	
+	*/
+	
+	
+	
 	
 	//////////////////////////// alignment fix for varying group sizes
+	
+	
+	*ren id id_old
+	*sort layer x y1
+	
+	*bysort x: gen id = _n
 	
 	
 	sort layer id x
@@ -296,6 +442,8 @@ preserve
 				local outval = r(sum)
 
 				
+				// di "Layer = `i', id = `x', total val = `totval', out val = `outval' "
+				
 				if (`toval' >= `outval') {
 					local off  = `toval' - `outval'  
 
@@ -317,22 +465,26 @@ preserve
 						qui replace y2 = y2 + `off' if layer==`i' & x==`next' & order>=`togrp' 
 						local mark2 `mark2', `togrp'
 					}
-				
 				}
 			}	
 		}	
 	}
+	
+	
+	sort layer x order
 
+	
+	
 	
 	//// add gaps
 	
 	sort layer id x
 	
-	cap drop tag
-	egen tag = tag(layer x order)
+	*cap drop tag
+	*egen tag = tag(layer x order)
 
-	sort layer x order id 
-	by layer x: replace tag = sum(tag)	
+	*sort layer x order id 
+	*by layer x: replace tag = sum(tag)	
 	
 	
 	levelsof x, local(lvls)
@@ -351,9 +503,15 @@ preserve
 	local propgap = `hival' * `gap' / 100
 	gen offset = (order - 1) * `propgap' 
 	
+	
+	gen y1_orig = y1
+	gen y2_orig = y2
+	
 	replace y1 = y1 + offset
 	replace y2 = y2 + offset
-
+	
+		
+	
 	
 	
 	
@@ -435,6 +593,7 @@ preserve
 
 	ren y1t y1	
 	ren y2t y2
+	
 	
 	
 	//recenter
@@ -564,11 +723,15 @@ preserve
 
 	replace xtemp = xtemp + layer - 1
 
+	
 
 	***** mid points for wedges
 			 
 	cap drop tag
+	
 	encode lab, gen(labels)
+		
+	
 	egen tag = tag(x labels)
 			 
 	cap gen midy = .
@@ -591,7 +754,8 @@ preserve
 		}
 	}
 
-
+	
+	
 	***** mid points for sankey labels
 
 	egen tagp = tag(id)

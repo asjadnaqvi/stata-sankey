@@ -1,7 +1,7 @@
 {smcl}
-{* 30Apr2023}{...}
+{* 25May2023}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.5 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.51 (GitHub)}}
 
 {hline}
 
@@ -27,16 +27,16 @@ Please report errors/bugs/enhancement requests on {browse "https://github.com/as
 {synopthdr}
 {synoptline}
 
-{p2coldent : {opt sankey value, from() to() by()}}The command requires a numeric variable. Both {opt from()} and {opt to()} can contain numeric, labeled or string variables.
-The {opt by()} variable contains a layer variable which ideally should be numeric. If strings are used, then please make sure that the spellings for categories are 
-consistent since each unique name is assumed a separate category.{p_end}
+{p2coldent : {opt sankey numvar, from() to() by()}}The command plots a numeric {it:numvar} variable that is defined by source {opt from()} and destination {opt to()}
+across {opt by()} levels. Both {opt from()} and {opt to()} should be string variables. If they are not, then they are converted to strings. This is to ensure that 
+mapping across {opt by()} levels remains consistent. The level {opt by()} should be a numeric variable defined in increments of 1.{p_end}
 
 {p2coldent : {opt palette(name)}}Color name is any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette tableau:{it:tableau}}.{p_end}
 
 {p2coldent : {opt sortby(option)}}Users can sort the data by {ul:value} or {ul:name}. The {opt sortby(value)} arranges the data using a numerical sort, while {opt sortby(name)}
 arranges them alphabetically. Both can be combined with reverse, {opt sortby(value, reverse)} or {opt sortby(name, reverse)}. Please note that the sorting will still
 respect the bundling of the nodes, which has priority for determining the order based on closeness of categories. Therefore, {opt sortby()} and will only sort 
-if there is space to sort!{p_end}
+if there is space to sort. This option will be improved in subsequent updates.{p_end}
 
 {p2coldent : {opt colorby(option)}}Users can color the diagram by {ul:layer} instead of the default where each unique name is taken as a unique color category.
 The {it:layer} option is determined by the {opt by()} variable, and it will give each layer a unique color. Alternatively, use the {opt colorvar()} option below.{p_end}
@@ -153,6 +153,7 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Version history}
 
+- {bf:1.51} : Add a string check for {opt from()} and {opt by()} variables.
 - {bf:1.5}  : Added {opt labprop}, {opt titleprop}, {opt labscale()}, {opt valnoright}, {opt valnoleft}, {opt sortby(, reverse)}.
 - {bf:1.4}  : Fixed the unbalanced panels. Fixed gaps between categories. Add column labels option. Added custom colors option.
 - {bf:1.3}  : Node bundling added to align nodes across groups. Options {opt sortby()} and {opt boxwidth()} added.
@@ -164,8 +165,8 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.5
-This release : 30 Apr 2023
+Version      : {bf:sankey} v1.51
+This release : 25 May 2023
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
