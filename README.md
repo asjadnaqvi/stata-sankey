@@ -6,7 +6,7 @@
 
 ---
 
-# sankey v1.51
+# sankey v1.6
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
@@ -21,7 +21,7 @@ SSC (**v1.5**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.51**):
+GitHub (**v1.6**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -56,18 +56,17 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.51** is as follows:
+The syntax for **v1.6** is as follows:
 
 ```applescript
 sankey value [if] [in], from(var) to(var) by(var) 
-            [ palette(str) colorby(layer|level) colorvar(var) colorvarmiss(str) colorboxmiss(str)
+            [ palette(str) colorby(layer|level) colorvar(var) stock colorvarmiss(str) colorboxmiss(str)
               smooth(1-8) gap(num) recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num)
-              labangle(str) labsize(str) labposition(str) labgap(str) showtotal
-              valsize(str) valcondition(num) format(str) valgap(str) novalues
-              labprop titleprop labscale(num) novalright novalleft nolabels
-              lwidth(str) lcolor(str) alpha(num) offset(num) sortby(value|name [, reverse]) boxwidth(str)
+              labangle(str) labsize(str) labposition(str) labgap(str) showtotal labprop labscale(num) 
+              valsize(str) valcondition(num) format(str) valgap(str) novalues valprop valscale(num)
+              novalright novalleft nolabels sort1(value|name[, reverse]) sort2(value|order[, reverse])
+              lwidth(str) lcolor(str) alpha(num) offset(num) boxwidth(str)
               title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) ]
-
 ```
 
 See the help file `help sankey` for details.
@@ -75,10 +74,10 @@ See the help file `help sankey` for details.
 The most basic use is as follows:
 
 ```
-sankey value, from(var1) to(var2) by(level variable)
+sankey value, from(var1) to(var2) by(level)
 ```
 
-where `var1` and `var2` are the string source and destination variables respectively against which the `value` variable is plotted. The `by()` variable defines the levels.
+where `var1` and `var2` are source and destination variables respectively against which the `value` variable is plotted. The `by()` variable defines the levels.
 
 
 
@@ -154,31 +153,84 @@ sankey value, from(source) to(destination) by(layer) noval showtot
 <img src="/figures/sankey5.png" height="600">
 
 
-### Sort
+### Sort (v1.6)
 
 ```
-sankey value, from(source) to(destination) by(layer) sortby(name)
+sankey value, from(source) to(destination) by(layer) sort1(name)
 ```
 
 <img src="/figures/sankey5_1.png" height="600">
 
 ```
-sankey value, from(source) to(destination) by(layer) sortby(name, reverse)
-```
-
-<img src="/figures/sankey5_1_1.png" height="600">
-
-```
-sankey value, from(source) to(destination) by(layer) sortby(value)
+sankey value, from(source) to(destination) by(layer) sort1(value)
 ```
 
 <img src="/figures/sankey5_2.png" height="600">
 
 ```
-sankey value, from(source) to(destination) by(layer) sortby(value, reverse)
+sankey value, from(source) to(destination) by(layer) sort1(value) sort2(value)
 ```
 
 <img src="/figures/sankey5_2_1.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(value)
+```
+
+<img src="/figures/sankey5_2_2.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(value, reverse) 
+```
+
+<img src="/figures/sankey5_2_3.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(order) 
+```
+
+<img src="/figures/sankey5_2_4.png" height="600">
+
+```
+sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(order, reverse) 
+```
+
+<img src="/figures/sankey5_2_5.png" height="600">
+
+
+Custom sorting on a value:
+
+```
+gen source2 = .
+gen destination2 = .
+
+foreach x in source destination {
+	replace `x'2 = 1 if `x'=="Blog"
+	replace `x'2 = 2 if `x'=="LinkedIn"
+	replace `x'2 = 3 if `x'=="Twitter"
+	replace `x'2 = 4 if `x'=="Direct"
+	replace `x'2 = 5 if `x'=="App"
+	replace `x'2 = 6 if `x'=="Medium"	
+	replace `x'2 = 7 if `x'=="Website"
+	replace `x'2 = 8 if `x'=="Homepage"
+	replace `x'2 = 9 if `x'=="T```otal"
+	replace `x'2 = 10 if `x'=="Google"
+	replace `x'2 = 11 if `x'=="Facebook"
+}
+
+
+lab de labels 1 "Blog" 2 "LinkedIn" 3 "Twitter" 4 "Direct" 5 "App" 6 "Medium" 7 "Website" 8 "Homepage" 9 "Total" 10 "Google" 11 "Facebook", replace
+
+lab val source2 labels
+lab val destination2 labels
+
+
+
+sankey value, from(source2) to(destination2) by(layer) 
+```
+
+<img src="/figures/sankey5_2_6.png" height="600">
+
 
 ### boxwidth
 
@@ -187,6 +239,7 @@ sankey value, from(source) to(destination) by(layer) boxwid(5)
 ```
 
 <img src="/figures/sankey5_3.png" height="600">
+
 
 ### valcond
 
@@ -281,6 +334,15 @@ sankey value, from(source) to(destination) by(layer) ctitles("Cat 1" "Cat 2" "Ca
 
 <img src="/figures/sankey6_9.png" height="600">
 
+### label rotation and offset
+
+```
+sankey value, from(source) to(destination) by(layer) noval showtot palette(CET C6) ///
+	laba(0) labpos(3) labg(-1) offset(10)
+```
+
+<img src="/figures/sankey6_10.png" height="600">
+
 
 ### hide values and labels (v1.5)
 
@@ -324,6 +386,16 @@ sankey value, from(source) to(destination) by(layer) labprop labs(2)
 
 <img src="/figures/sankey9_2.png" height="600">
 
+
+### stocks (v1.6)
+
+```
+sankey value, from(source) to(destination) by(layer) stock
+```
+
+<img src="/figures/sankey10.png" height="600">
+
+
 ### All together
 
 ```
@@ -342,6 +414,14 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+**v1.6 (11 Jun 2023)**
+- Complete rewrite of the base routines. The code is 30% smaller but several times faster.
+- The option `sortby()` split into `sort1()` and `sort2()` for clarity.
+- Added support for numerical variables with value labels.
+- Option `stock` added to collapse own flows (source = destination) to box heights.
+- Several code optimizations and minor bug fixes.
+
 
 **v1.51 (25 May 2023)**
 - Added background checks for `from()` and `to()` variable. This ensures that the code runs regardless of the variable types. Ideally both should be strings.

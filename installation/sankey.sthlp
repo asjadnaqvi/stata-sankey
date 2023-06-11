@@ -1,7 +1,7 @@
 {smcl}
-{* 25May2023}{...}
+{* 11Jun2023}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.51 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.6 (GitHub)}}
 
 {hline}
 
@@ -11,12 +11,12 @@
 {p 8 15 2}
 
 {cmd:sankey} {it:value} {ifin}, {cmdab:f:rom}({it:var}) {cmdab:t:o}({it:var}) {cmd:by}({it:var}) 
-            {cmd:[} {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:colorvar}({it:var}) {cmd:colorvarmiss}({it:str}) {cmd:colorboxmiss}({it:str})
+            {cmd:[} {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:colorvar}({it:var}) {cmd:stock} {cmd:colorvarmiss}({it:str}) {cmd:colorboxmiss}({it:str})
               {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) {cmdab:ctitle:s}({it:list}) {cmdab:ctg:ap}({it:num}) {cmdab:cts:ize}({it:num})
-              {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al}
-              {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:num}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues}
-              {cmd:labprop} {cmd:titleprop} {cmd:labscale}({it:num}) {cmdab:novalr:ight} {cmdab:novall:eft} {cmdab:nolab:els}
-              {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmd:sortby}({it:value}|{it:name} [{it:, reverse}]) {cmdab:boxw:idth}({it:str})
+              {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al} {cmd:labprop} {cmd:labscale}({it:num}) 
+              {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:num}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues} {cmd:valprop} {cmd:valscale}({it:num})
+              {cmdab:novalr:ight} {cmdab:novall:eft} {cmdab:nolab:els} {cmd:sort1}({it:value}|{it:name}[{it:, reverse}]) {cmd:sort2}({it:value}|{it:order}[{it:, reverse}])
+              {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmdab:boxw:idth}({it:str})
               {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) {cmd:]}
 
 {p 4 4 2}
@@ -33,10 +33,16 @@ mapping across {opt by()} levels remains consistent. The level {opt by()} should
 
 {p2coldent : {opt palette(name)}}Color name is any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette tableau:{it:tableau}}.{p_end}
 
-{p2coldent : {opt sortby(option)}}Users can sort the data by {ul:value} or {ul:name}. The {opt sortby(value)} arranges the data using a numerical sort, while {opt sortby(name)}
-arranges them alphabetically. Both can be combined with reverse, {opt sortby(value, reverse)} or {opt sortby(name, reverse)}. Please note that the sorting will still
-respect the bundling of the nodes, which has priority for determining the order based on closeness of categories. Therefore, {opt sortby()} and will only sort 
-if there is space to sort. This option will be improved in subsequent updates.{p_end}
+{p2coldent : {opt sort1(name|value[, reverse])}}Users can sort the boxes for each layer by using {ul:value} or {ul:name} (default).
+The {opt sort1(value)} organizes the boxes based on their values, while {opt sort1(name)} arranges them alphabetically.
+Both can be combined with reverse, e.g. {opt sort1(value, reverse)} or {opt sortby(name, reverse)}. Note that you can specify a custom sort by using value labels.{p_end}
+
+{p2coldent : {opt sort2(order|vaue[, reverse])}}Users can sort the links between the boxes using {ul:value} or {ul:order} (default).
+The {opt sort2(value)} arranges the links numerically, while {opt sort2(order)} arranges them in the order they originate. The latter is also aesthetically more pleasing
+since it avoids links unnecessarily crossing each other.{p_end}
+
+{p2coldent : {opt stock}}This is an advanced option that collapses own flows (source = destination) as stocks. Own flows are no longer shown as links but add to the stocks
+that is reflected by the height of the boxes. This option can be useful if own flows are not be be considered as leakages from one layer to another.{p_end}
 
 {p2coldent : {opt colorby(option)}}Users can color the diagram by {ul:layer} instead of the default where each unique name is taken as a unique color category.
 The {it:layer} option is determined by the {opt by()} variable, and it will give each layer a unique color. Alternatively, use the {opt colorvar()} option below.{p_end}
@@ -71,6 +77,8 @@ Default value is {opt alpha(75)} for 75% transparency.{p_end}
 
 {p2coldent : {opt labprop}}Scale the labels based on the relative stocks.{p_end}
 
+{p2coldent : {opt labscale(num)}}Scale factor of {opt labprop}. Default value is {opt labscale(0.3333)}. Advance option, use carefully.{p_end}
+
 {p2coldent : {opt labscale(num)}}Scaling factor of the labels. Default is {opt labscale(0.3333)}. Changing the value will change the relative
 weights of the smaller and higher values. This is an advanced option therefore use with caution.{p_end}
 
@@ -90,21 +98,13 @@ If the label angle is change to horitzontal or the label position is changed fro
 {p2coldent : {opt boxw:idth(str)}}Width of the node boxes. Default is {opt boxw(3.2)}.{p_end}
 
 
-{p 4 4 2}{ul:{it:Column titles}}
-
-{p2coldent : {opt ctitle:s(list)}}Give a list of column names. Names can either be defined as {opt ctitle("name1 name2 name3 ...")} or if there are spaces in 
-names as {opt ctitle("My name1" "My name2" "My name3" "...")}. Please make sure names are not very long and match the number of columns.{p_end}
-
-{p2coldent : {opt cts:ize(num)}}The size of the column titles. Default is {opt cts(2.5)}.{p_end}
-
-{p2coldent : {opt ctg:ap(num)}}The gap of the column titles. Default is {opt ctg(-5)}.{p_end}
-
-
-{p 4 4 2}{ul:{it:Values}}
+{p 4 4 2}{ul:{it:Link values}}
 
 {p2coldent : {opt vals:ize(str)}}The size of the displayed values. Default is {opt vals(1.5)}.{p_end}
 
 {p2coldent : {opt valprop}}Scale the values based on the relative flows.{p_end}
+
+{p2coldent : {opt valscale(num)}}Scale factor of {opt valprop}. Default value is {opt valscale(0.3333)}. Advance option, use carefully.{p_end}
 
 {p2coldent : {opt noval:ues}}Hide the values.{p_end}
 
@@ -116,6 +116,16 @@ names as {opt ctitle("My name1" "My name2" "My name3" "...")}. Please make sure 
 can be used to reduce the number of labels displayed especially if there are several very small categories that might make the figure look messy.{p_end}
 
 {p2coldent : {opt format(str)}}The format of the displayed values. Default is {opt format(%12.0f)}.{p_end}
+
+
+{p 4 4 2}{ul:{it:Column titles}}
+
+{p2coldent : {opt ctitle:s(list)}}Give a list of column names. Names can either be defined as {opt ctitle("name1 name2 name3 ...")} or if there are spaces in 
+names as {opt ctitle("My name1" "My name2" "My name3" "...")}. Please make sure names are not very long and match the number of columns.{p_end}
+
+{p2coldent : {opt cts:ize(num)}}The size of the column titles. Default is {opt cts(2.5)}.{p_end}
+
+{p2coldent : {opt ctg:ap(num)}}The gap of the column titles. Default is {opt ctg(-5)}.{p_end}
 
 
 {p 4 4 2}{ul:{it:Miscellaneous}}
@@ -153,8 +163,9 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Version history}
 
+- {bf:1.6}  : Rewrite of core routines. {opt sortby()} split into {opt sort1()} and {opt sort2()}. New option {opt stock} added.
 - {bf:1.51} : Add a string check for {opt from()} and {opt by()} variables.
-- {bf:1.5}  : Added {opt labprop}, {opt titleprop}, {opt labscale()}, {opt valnoright}, {opt valnoleft}, {opt sortby(, reverse)}.
+- {bf:1.5}  : Added {opt labprop}, {opt valprop}, {opt labscale()}, {opt valnoright}, {opt valnoleft}, {opt sortby(, reverse)}.
 - {bf:1.4}  : Fixed the unbalanced panels. Fixed gaps between categories. Add column labels option. Added custom colors option.
 - {bf:1.3}  : Node bundling added to align nodes across groups. Options {opt sortby()} and {opt boxwidth()} added.
 - {bf:1.21} : Bug fixes for 1.2. {opt labcolor()} added.
@@ -165,8 +176,8 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.51
-This release : 25 May 2023
+Version      : {bf:sankey} v1.6
+This release : 11 Jun 2023
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
