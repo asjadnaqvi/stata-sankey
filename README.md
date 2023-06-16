@@ -419,9 +419,8 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 - Complete rewrite of the base routines. The code is 30% smaller but several times faster.
 - The option `sortby()` split into `sort1()` and `sort2()` for clarity.
 - Added support for numerical variables with value labels.
-- Option `stock` added to collapse own flows (source = destination) to box heights.
+- Option `stock` added to collapse own flows (source = destination) to box heights (requested by Oras Alabas).
 - Several code optimizations and minor bug fixes.
-
 
 **v1.51 (25 May 2023)**
 - Added background checks for `from()` and `to()` variable. This ensures that the code runs regardless of the variable types. Ideally both should be strings.
