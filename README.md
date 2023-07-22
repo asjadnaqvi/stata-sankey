@@ -9,8 +9,8 @@
 
 ---
 
-# sankey v1.6
-(11 Jun 2023)
+# sankey v1.61
+(22 Jul 2023)
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
