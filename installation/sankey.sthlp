@@ -135,7 +135,7 @@ This option is highly useful especially if labels are rotated with custom positi
 
 {p2coldent : {opt title()}, {opt subtitle()}, {opt note()}}These are standard twoway graph options.{p_end}
 
-{p2coldent : {opt scheme()}, {opt name()}}These are standard twoway graph options.{p_end}
+{p2coldent : {opt scheme()}, {opt name()}, {opt saving()}}These are standard twoway graph options.{p_end}
 
 {p2coldent : {opt xsize()}, {opt ysize()}}These standard twoway options can be used to space out the layers.
 This is particularly helpful if several layers are plotted.{p_end}
