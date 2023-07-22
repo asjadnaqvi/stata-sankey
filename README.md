@@ -25,7 +25,7 @@ SSC (**v1.6**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.6**):
+GitHub (**v1.61**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -418,6 +418,10 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+**v1.61 (22 Jul 2023)**
+- `saving()` option added (requested by Anirban Basu).
+- Minor fixes.
 
 **v1.6 (11 Jun 2023)**
 - Complete rewrite of the base routines. The code is 30% smaller but several times faster.

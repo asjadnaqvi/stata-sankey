@@ -1,6 +1,7 @@
-*! sankey v1.6 (11 Jun 2023)
+*! sankey v1.61 (22 Jul 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+*v1.61 (22 Jul 2023): Adding saving() option. minor fixes
 *v1.6  (11 Jun 2023): Major rewrite of the core routines. Labels added. twp sorts added. Program is faster.
 *v1.52 (29 May 2023): Add option where wwn flows are considered stock 
 *v1.51 (25 May 2023): from/to string check. Help file updated.
@@ -34,7 +35,7 @@ version 15
 		[ wrap(real 7) CTITLEs(string asis) CTGap(real -5) CTSize(real 2.5) colorvar(varname) colorvarmiss(string) colorboxmiss(string)  ] ///  // v1.4 options
 		[ valprop labprop valscale(real 0.33333) labscale(real 0.3333) NOVALRight NOVALLeft NOLABels ]      ///  // v1.5
 		[ stock sort1(string) sort2(string) ]  /// // v1.6
-		[ title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)		] 
+		[ title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)	saving(passthru) ] 
 		
 
 	// check dependencies
@@ -287,7 +288,7 @@ preserve
 	
 	gsort layer2 marker var markme `ssort2'   // this determines the second sort
 
-	by layer2 marker var: gen double stack_end = sum(val) if markme!=1
+	by layer2 marker var: gen double stack_end   = sum(val) if markme!=1
 	by layer2 marker var: gen double stack_start = stack_end[_n - 1]  if markme!=1
 	recode stack_start (.=0) if markme!=1
 
@@ -749,7 +750,7 @@ preserve
 					xlabel(, nogrid) ylabel(0 `yrange' , nogrid)     ///
 					xscale(off range(`xrmin' `xrmax')) yscale(off)	 ///
 					`title' `subtitle' `note' `scheme' `name' 		 ///
-					`xsize' `ysize'
+					`xsize' `ysize' `saving'
 		
 */
 restore

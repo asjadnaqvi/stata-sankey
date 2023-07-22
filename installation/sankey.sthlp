@@ -1,7 +1,7 @@
 {smcl}
-{* 11Jun2023}{...}
+{* 22Jul2023}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.6 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.61 (GitHub)}}
 
 {hline}
 
@@ -17,7 +17,7 @@
               {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:num}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues} {cmd:valprop} {cmd:valscale}({it:num})
               {cmdab:novalr:ight} {cmdab:novall:eft} {cmdab:nolab:els} {cmd:sort1}({it:value}|{it:name}[{it:, reverse}]) {cmd:sort2}({it:value}|{it:order}[{it:, reverse}])
               {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmdab:boxw:idth}({it:str})
-              {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) {cmd:]}
+              {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) {cmd:saving}({it:str}) {cmd:]}
 
 {p 4 4 2}
 Please report errors/bugs/enhancement requests on {browse "https://github.com/asjadnaqvi/stata-sankey/issues":GitHub}. 
@@ -163,6 +163,7 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Version history}
 
+- {bf:1.61} : Adding saving() option. 
 - {bf:1.6}  : Rewrite of core routines. {opt sortby()} split into {opt sort1()} and {opt sort2()}. New option {opt stock} added.
 - {bf:1.51} : Add a string check for {opt from()} and {opt by()} variables.
 - {bf:1.5}  : Added {opt labprop}, {opt valprop}, {opt labscale()}, {opt valnoright}, {opt valnoleft}, {opt sortby(, reverse)}.
@@ -176,8 +177,8 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.6
-This release : 11 Jun 2023
+Version      : {bf:sankey} v1.61
+This release : 22 Jul 2023
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
