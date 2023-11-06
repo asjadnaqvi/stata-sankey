@@ -9,8 +9,8 @@
 
 ---
 
-# sankey v1.61
-(22 Jul 2023)
+# sankey v1.7
+(06 Nov 2023)
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
@@ -25,7 +25,7 @@ SSC (**v1.6**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.61**):
+GitHub (**v1.7**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -62,15 +62,16 @@ graph set window fontface "Arial Narrow"
 
 The syntax for **v1.6** is as follows:
 
-```applescript
+```stata
 sankey value [if] [in], from(var) to(var) by(var) 
             [ palette(str) colorby(layer|level) colorvar(var) stock colorvarmiss(str) colorboxmiss(str)
-              smooth(1-8) gap(num) recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num)
+              smooth(1-8) gap(num) recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num) ctposition(bot|top)
               labangle(str) labsize(str) labposition(str) labgap(str) showtotal labprop labscale(num) 
               valsize(str) valcondition(num) format(str) valgap(str) novalues valprop valscale(num)
               novalright novalleft nolabels sort1(value|name[, reverse]) sort2(value|order[, reverse])
-              lwidth(str) lcolor(str) alpha(num) offset(num) boxwidth(str)
-              title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) ]
+              lwidth(str) lcolor(str) alpha(num) offset(num) boxwidth(str) percent
+              title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) saving(str) ]
+
 ```
 
 See the help file `help sankey` for details.
@@ -204,7 +205,7 @@ sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(
 
 Custom sorting on a value:
 
-```
+```stata
 gen source2 = .
 gen destination2 = .
 
@@ -217,7 +218,7 @@ foreach x in source destination {
 	replace `x'2 = 6 if `x'=="Medium"	
 	replace `x'2 = 7 if `x'=="Website"
 	replace `x'2 = 8 if `x'=="Homepage"
-	replace `x'2 = 9 if `x'=="T```otal"
+	replace `x'2 = 9 if `x'=="Total"
 	replace `x'2 = 10 if `x'=="Google"
 	replace `x'2 = 11 if `x'=="Facebook"
 }
@@ -338,6 +339,13 @@ sankey value, from(source) to(destination) by(layer) ctitles("Cat 1" "Cat 2" "Ca
 
 <img src="/figures/sankey6_9.png" height="600">
 
+```
+sankey value, from(source) to(destination) by(layer) ctitles("Cat 1" "Cat 2" "Cat 3" "Cat 4" "Cat 5") ctpos(top) ctg(100) recenter(top)
+```
+
+<img src="/figures/sankey6_9_1.png" height="600">
+
+
 ### label rotation and offset
 
 ```
@@ -418,6 +426,12 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+**v1.7 (06 Nov 2023)**
+- Fixed `valcond()` dropping bar values.
+- Fixed `ctitles()` getting random colors. It now defaults to black.
+- Added `ctpos()` option to change column title position.
+- Added `percent` option which is still beta. Convert flows to percent values.
 
 **v1.61 (22 Jul 2023)**
 - `saving()` option added (requested by Anirban Basu).

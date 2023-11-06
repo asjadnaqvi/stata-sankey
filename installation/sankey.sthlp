@@ -1,7 +1,7 @@
 {smcl}
-{* 22Jul2023}{...}
+{* 06Nov2023}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.61 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.7 (GitHub)}}
 
 {hline}
 
@@ -12,11 +12,11 @@
 
 {cmd:sankey} {it:value} {ifin}, {cmdab:f:rom}({it:var}) {cmdab:t:o}({it:var}) {cmd:by}({it:var}) 
             {cmd:[} {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:colorvar}({it:var}) {cmd:stock} {cmd:colorvarmiss}({it:str}) {cmd:colorboxmiss}({it:str})
-              {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) {cmdab:ctitle:s}({it:list}) {cmdab:ctg:ap}({it:num}) {cmdab:cts:ize}({it:num})
+              {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) {cmdab:ctitle:s}({it:list}) {cmdab:ctg:ap}({it:num}) {cmdab:cts:ize}({it:num}) {cmdab:ctpos:ition}({it:bot}|{it:top})
               {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al} {cmd:labprop} {cmd:labscale}({it:num}) 
               {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:num}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues} {cmd:valprop} {cmd:valscale}({it:num})
               {cmdab:novalr:ight} {cmdab:novall:eft} {cmdab:nolab:els} {cmd:sort1}({it:value}|{it:name}[{it:, reverse}]) {cmd:sort2}({it:value}|{it:order}[{it:, reverse}])
-              {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmdab:boxw:idth}({it:str})
+              {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmdab:boxw:idth}({it:str}) {cmd:percent}
               {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) {cmd:saving}({it:str}) {cmd:]}
 
 {p 4 4 2}
@@ -70,32 +70,35 @@ Default value is {opt alpha(75)} for 75% transparency.{p_end}
 
 {p2coldent : {opt lc:olor(str)}}The outline color of the area fills. Default is {opt lc(white)}.{p_end}
 
+{p2coldent : {opt percent}} {bf:Beta option:} Covert flow values into percentage share of category bars. Might give messy output if outflows are greater than inflows.
+Use cautiously.{p_end}
 
-{p 4 4 2}{ul:{it:Boxes}}
 
-{p2coldent : {opt labs:ize(str)}}The size of the category labels. Default is {opt labs(2)}.{p_end}
+{p 4 4 2}{ul:{it:Bars}}
 
-{p2coldent : {opt labprop}}Scale the labels based on the relative stocks.{p_end}
+{p2coldent : {opt labs:ize(str)}}The size of the bar labels. Default is {opt labs(2)}.{p_end}
+
+{p2coldent : {opt labprop}}Scale the bar labels based on the relative stocks.{p_end}
 
 {p2coldent : {opt labscale(num)}}Scale factor of {opt labprop}. Default value is {opt labscale(0.3333)}. Advance option, use carefully.{p_end}
 
-{p2coldent : {opt labscale(num)}}Scaling factor of the labels. Default is {opt labscale(0.3333)}. Changing the value will change the relative
-weights of the smaller and higher values. This is an advanced option therefore use with caution.{p_end}
+{p2coldent : {opt laba:ngle(str)}}The angle of the bar labels. Default is {opt laba(90)} for vertical labels.{p_end}
 
-{p2coldent : {opt laba:ngle(str)}}The angle of the category labels. Default is {opt laba(90)} for vertical labels.{p_end}
+{p2coldent : {opt labc:olor(str)}}The color of the bar labels. Default is {opt labc(black)}.{p_end}
 
-{p2coldent : {opt labc:olor(str)}}The color of the category labels. Default is {opt labc(black)}.{p_end}
+{p2coldent : {opt nolab:els}}Hide the bar labels.{p_end}
 
-{p2coldent : {opt nolab:els}}Hide the box labels.{p_end}
+{p2coldent : {opt labpos:ition(str)}}The position of the bar labels. Default is {opt labpos(0)} for centered.{p_end}
 
-{p2coldent : {opt labpos:ition(str)}}The position of the category labels. Default is {opt labpos(0)} for centered.{p_end}
-
-{p2coldent : {opt labg:ap(str)}}The gap of the category labels from the mid point of the wedges. Default is {opt labg(0)} for no gap.
+{p2coldent : {opt labg:ap(str)}}The gap of the bars from the mid point. Default is {opt labg(0)} for no gap.
 If the label angle is change to horitzontal or the label position is changed from 0, then {opt labg()} can be used to fine-tune the placement.{p_end}
 
-{p2coldent : {opt showtot:al}}Display the category totals on the node boxes.{p_end}
+{p2coldent : {opt showtot:al}}Display the category totals on the bars.{p_end}
 
-{p2coldent : {opt boxw:idth(str)}}Width of the node boxes. Default is {opt boxw(3.2)}.{p_end}
+{p2coldent : {opt boxw:idth(str)}}Width of the bars. Default is {opt boxw(3.2)}.{p_end}
+
+{p2coldent : {opt labscale(num)}}Scaling factor of the labels. Default is {opt labscale(0.3333)}. Changing the value will change the relative
+weights of the smaller and higher values. This is an advanced option therefore use with caution.{p_end}
 
 
 {p 4 4 2}{ul:{it:Link values}}
@@ -125,7 +128,9 @@ names as {opt ctitle("My name1" "My name2" "My name3" "...")}. Please make sure 
 
 {p2coldent : {opt cts:ize(num)}}The size of the column titles. Default is {opt cts(2.5)}.{p_end}
 
-{p2coldent : {opt ctg:ap(num)}}The gap of the column titles. Default is {opt ctg(-5)}.{p_end}
+{p2coldent : {opt ctg:ap(num)}}The gap of the column titles. Default is {opt ctg(0)}.{p_end}
+
+{p2coldent : {opt ctpos:ition(bot|top)}}The position of column titles. No option defaults to {opt ctpos(bot)}. Might still need adjustment via {opt ctgap()}.{p_end}
 
 
 {p 4 4 2}{ul:{it:Miscellaneous}}
@@ -151,8 +156,8 @@ The {browse "http://repec.sowi.unibe.ch/stata/palettes/index.html":palette} pack
 {stata ssc install palettes, replace}
 {stata ssc install colrspace, replace}
 
-Even if you have these installed, it is highly recommended to update the dependencies:
-{stata ado update, update}
+Even if you have these installed, it is highly recommended to regularly check for updates.
+
 
 {title:Examples}
 
@@ -163,6 +168,7 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Version history}
 
+- {bf:1.7}  : Fixed {opt valcond()} dropping bar values, and fixed ctitles color to black. Added {opt percent} (beta), {opt ctpos()}.
 - {bf:1.61} : Adding saving() option. 
 - {bf:1.6}  : Rewrite of core routines. {opt sortby()} split into {opt sort1()} and {opt sort2()}. New option {opt stock} added.
 - {bf:1.51} : Add a string check for {opt from()} and {opt by()} variables.
@@ -177,8 +183,8 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.61
-This release : 22 Jul 2023
+Version      : {bf:sankey} v1.7
+This release : 06 Nov 2023
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey

@@ -1,6 +1,7 @@
-*! sankey v1.61 (22 Jul 2023)
+*! sankey v1.7 (06 Nov 2023)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+*v1.7  (06 Nov 2023): fix valcond() dropping labels in bars, added percent (still in beta), add ctitlepos() option. minor cleanups  
 *v1.61 (22 Jul 2023): Adding saving() option. minor fixes
 *v1.6  (11 Jun 2023): Major rewrite of the core routines. Labels added. twp sorts added. Program is faster.
 *v1.52 (29 May 2023): Add option where wwn flows are considered stock 
@@ -28,13 +29,14 @@ version 15
 	syntax varlist(numeric max=1) [if] [in], From(varname) To(varname) by(varname) ///
 		[ palette(string) smooth(numlist >=1 <=8) gap(real 5) RECENter(string) colorby(string) alpha(real 75) ]  ///
 		[ LABAngle(string) LABSize(string) LABPOSition(string) LABGap(string) SHOWTOTal  ] ///
-		[ VALSize(string)  VALCONDition(real 0) format(string) VALGap(string) NOVALues ]  ///
+		[ VALSize(string)  VALCONDition(real 0) format(string) VALGap(string) NOVALues   ] ///
 		[ LWidth(string) LColor(string)  	 ]  ///
 		[ offset(real 0) LABColor(string) 	 ]  ///  // added v1.1
-		[ BOXWidth(string)	 ]  ///  // added v1.3
-		[ wrap(real 7) CTITLEs(string asis) CTGap(real -5) CTSize(real 2.5) colorvar(varname) colorvarmiss(string) colorboxmiss(string)  ] ///  // v1.4 options
+		[ BOXWidth(string)	 				 ]  ///  // added v1.3
+		[ wrap(real 7) CTITLEs(string asis) CTGap(real -10) CTSize(real 2.5) colorvar(varname) colorvarmiss(string) colorboxmiss(string)  ] ///  // v1.4 options
 		[ valprop labprop valscale(real 0.33333) labscale(real 0.3333) NOVALRight NOVALLeft NOLABels ]      ///  // v1.5
-		[ stock sort1(string) sort2(string) ]  /// // v1.6
+		[ stock sort1(string) sort2(string)  ]  /// // v1.6
+		[ percent ctpos(string) ]    /// // v1.7 
 		[ title(passthru) subtitle(passthru) note(passthru) scheme(passthru) name(passthru) xsize(passthru) ysize(passthru)	saving(passthru) ] 
 		
 
@@ -131,7 +133,7 @@ preserve
 	
 	cap ren `by' xcut
 	
-	egen layer = group(xcut)
+	egen layer    = group(xcut)
 	replace layer = layer - 1
 
 	ren `from' 		var1
@@ -139,6 +141,24 @@ preserve
 	ren `varlist' 	val1
 	
 	gen val2 	=   val1
+	
+	
+	if "`percent'" != "" {   // suggestion by Mortiz Poll
+		tempvar aux1 aux2 total
+		
+		bysort layer (var1 var2): egen double `total' = sum(val1)
+		replace val1 = (val1 / `total') * 100
+		
+		bysort var1 layer clrlvl: egen double `aux1' = sum(val2)
+		replace `aux1' = 0 if clrlvl == 0
+		bysort layer: egen double `aux2' = sum(`aux1')
+		replace val2 = (val2 / `aux2') * 100
+		
+		gsort layer val1 val2
+	}
+	
+	
+	
 	
 	gen id = _n
 	
@@ -167,18 +187,18 @@ preserve
 		
 	sort layer2 var marker
 
-	bysort layer2 var: egen val_out_temp = sum(val) if marker==1 // how much value is sent out
-	bysort layer2 var: egen val_in_temp  = sum(val) if marker==2 & markme!=1 // how many value comes in
+	bysort layer2 var: egen double val_out_temp = sum(val) if marker==1 // how much value is sent out
+	bysort layer2 var: egen double val_in_temp  = sum(val) if marker==2 & markme!=1 // how many value comes in
 	 
-	bysort layer2 var: egen val_out = max(val_out_temp)
-	bysort layer2 var: egen val_in  = max(val_in_temp)
+	bysort layer2 var: egen double val_out = max(val_out_temp)
+	bysort layer2 var: egen double val_in  = max(val_in_temp)
  	
 	drop *temp
 
 	sort layer var marker
 	recode val_in val_out (.=0)
 
-	egen height = rowmax(val_in val_out) // this is the maximum height for each category for each group.
+	egen double height = rowmax(val_in val_out) // this is the maximum height for each category for each group.
 
 	// sort by name or value
 
@@ -499,9 +519,21 @@ preserve
 	if "`labgap'" 		== "" local labgap 0
 	if "`valsize'"  	== "" local valsize 1.5
 	if "`valgap'" 	 	== "" local valgap 2
-	if "`format'" 		== "" local format "%12.0f"	
 	if "`boxwidth'"    	== "" local boxwidth 3.2
 	if "`colorboxmiss'" == "" local colorboxmiss gs10
+	
+	
+	if "`format'" 		== "" {
+		if "`percent'" != "" {
+			local format "%5.2f"
+			
+		}
+		else {
+			local format "%12.0f"
+		}
+	}
+	
+		
 	
 	
 	format val `format'	
@@ -640,19 +672,26 @@ preserve
 				summ labwgt if id==`x', meanonly
 				local labw = r(mean)
 				
-				local boxlabel `boxlabel' (scatter ymid layer2 if tag_spike==1 & height >= `valcondition' & id==`x',  msymbol(none) mlabel(lab2) mlabsize(`labw') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) ///
+				local boxlabel `boxlabel' (scatter ymid layer2 if tag_spike==1 & id==`x',  msymbol(none) mlabel(lab2) mlabsize(`labw') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) ///
 			
 			}
 			
 		}
 		else {
 			
-			local boxlabel (scatter ymid layer2 if tag_spike==1 & val >= `valcondition',  msymbol(none) mlabel(lab2) mlabsize(`labsize') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) ///
+			local boxlabel (scatter ymid layer2 if tag_spike==1 ,  msymbol(none) mlabel(lab2) mlabsize(`labsize') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) ///
 			
 		}	
 	}	
 
-
+	
+	local flowval val
+	
+	if "`percent'" != "" {
+		gen valper = string(val, "`format'") + "%" if (marker==1 | marker==2)
+		local flowval valper
+	}
+	
 
 	**** arc labels
 	
@@ -668,12 +707,12 @@ preserve
 		if "`valprop'" == "" {
 			
 			if  "`novalleft'" == "" {
-				local values `values' (scatter arcmid layer2  if val >= `valcondition' & marker==1, msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(3) mlabgap(`valgap') mlabcolor(`labcolor')) ///
+				local values `values' (scatter arcmid layer2  if val >= `valcondition' & marker==1, msymbol(none) mlabel(`flowval') mlabsize(`valsize') mlabpos(3) mlabgap(`valgap') mlabcolor(`labcolor')) ///
 			
 			}
 			
 			if  "`novalright'" == "" {
-				local values `values' (scatter arcmid layer2  if val >= `valcondition' & marker==2, msymbol(none) mlabel(val) mlabsize(`valsize') mlabpos(9) mlabgap(`valgap') mlabcolor(`labcolor')) ///
+				local values `values' (scatter arcmid layer2  if val >= `valcondition' & marker==2, msymbol(none) mlabel(`flowval') mlabsize(`valsize') mlabpos(9) mlabgap(`valgap') mlabcolor(`labcolor')) ///
 			
 			}
 		}
@@ -704,12 +743,21 @@ preserve
 	
 	if `"`ctitles'"' != "" {
 		
+		if "`ctpos'" == "bot" | "`ctpos'" == "" {
+			local cty = -5 + `ctgap'
+		}
+		
+		if "`ctpos'" == "top" {
+			summ y2, meanonly
+			local cty = `r(max)' + `ctgap'
+		}
+		
 		local clabs `"`ctitles'"'
 		local len : word count `clabs'
 
 
 		gen title_x 	= .
-		gen title_y 	= `ctgap' in 1/`len'
+		gen title_y 	= `cty' in 1/`len'
 		gen title_name 	= ""
 
 
@@ -724,7 +772,7 @@ preserve
 	**** column labels 
 	
 	if `"`ctitles'"' != "" {
-		local lvllab (scatter title_y title_x, msymbol(none) mlabel(title_name) mlabpos(0) mlabsize(`ctsize')) ///
+		local lvllab (scatter title_y title_x, msymbol(none) mlabel(title_name) mcolor(black) mlabpos(0) mlabsize(`ctsize')) ///
 		
 	}
 
