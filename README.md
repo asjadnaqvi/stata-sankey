@@ -19,7 +19,7 @@ This package allows users to draw Sankey plots in Stata. It is based on the [San
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-SSC (**v1.61**):
+SSC (**v1.7**):
 
 ```
 ssc install sankey, replace
@@ -60,7 +60,7 @@ graph set window fontface "Arial Narrow"
 
 ## Syntax
 
-The syntax for **v1.6** is as follows:
+The syntax for the latest version is as follows:
 
 ```stata
 sankey value [if] [in], from(var) to(var) by(var) 
