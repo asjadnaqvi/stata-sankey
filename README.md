@@ -9,8 +9,8 @@
 
 ---
 
-# sankey v1.7
-(06 Nov 2023)
+# sankey v1.71
+(15 Jan 2024)
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
@@ -25,7 +25,7 @@ SSC (**v1.7**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.7**):
+GitHub (**v1.71**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -426,6 +426,9 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+**v1.71 (15 Jan 2024)**
+- Fixed a bug where numerical `from()` and `to()` variables with value labels were messing up the labels in the final figure (reported by Ian White).
 
 **v1.7 (06 Nov 2023)**
 - Fixed `valcond()` dropping bar values.

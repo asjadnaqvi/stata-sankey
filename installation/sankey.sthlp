@@ -1,7 +1,7 @@
 {smcl}
-{* 06Nov2023}{...}
+{* 15Jan2024}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.7 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.71 (GitHub)}}
 
 {hline}
 
@@ -168,6 +168,7 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Version history}
 
+- {bf:1.71} : Fixed a bug where from() and to() value labels were overwriting each other.
 - {bf:1.7}  : Fixed {opt valcond()} dropping bar values, and fixed ctitles color to black. Added {opt percent} (beta), {opt ctpos()}.
 - {bf:1.61} : Adding saving() option. 
 - {bf:1.6}  : Rewrite of core routines. {opt sortby()} split into {opt sort1()} and {opt sort2()}. New option {opt stock} added.
@@ -183,8 +184,8 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.7
-This release : 06 Nov 2023
+Version      : {bf:sankey} v1.71
+This release : 15 Jan 2024
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey

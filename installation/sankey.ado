@@ -1,7 +1,8 @@
-*! sankey v1.7 (06 Nov 2023)
+*! sankey v1.71 (15 Jan 2024)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-*v1.7  (06 Nov 2023): fix valcond() dropping labels in bars, added percent (still in beta), add ctitlepos() option. minor cleanups  
+*v1.71 (15 Jan 2024): fixed a bug where value labels of to() and from() were overwriting each other.
+*v1.7  (06 Nov 2023): fix valcond() dropping labels in bars, added percent (still in beta), added ctpos() option. minor cleanups  
 *v1.61 (22 Jul 2023): Adding saving() option. minor fixes
 *v1.6  (11 Jun 2023): Major rewrite of the core routines. Labels added. twp sorts added. Program is faster.
 *v1.52 (29 May 2023): Add option where wwn flows are considered stock 
@@ -43,7 +44,7 @@ version 15
 	// check dependencies
 	cap findfile colorpalette.ado
 	if _rc != 0 {
-		display as error "The palettes package is missing. Install the {stata ssc install palettes, replace:palettes} and {stata ssc install colrspace, replace:colrspace} packages."
+		display as error "The {bf:palettes} package is missing. Install the {stata ssc install palettes, replace:palettes} and {stata ssc install colrspace, replace:colrspace} packages."
 		exit
 	}
 	
@@ -122,9 +123,30 @@ preserve
 	
 	keep `varlist' `from' `to' `by' clrlvl
 	
+		// convert value labels to strings
+		cap confirm numeric var `from'
+		if _rc==0 {
+			if "`: value label `from''" != "" {
+				decode `from', gen(temp1)		
+				drop `from'
+				ren temp1 `from'
+			}
+		}
+		
+		cap confirm numeric var `to'
+		if _rc==0 {
+			if "`: value label `to''" != "" {
+				decode `to', gen(temp2)		
+				drop `to'
+				ren temp2 `to'
+			}
+		}		
+	
+	
 	collapse (sum) `varlist' (mean) clrlvl , by(`from' `to' `by')
 
 	gen markme = .
+	
 	
 	if "`stock'" != "" {
 		replace markme = `from'== `to'
@@ -165,6 +187,8 @@ preserve
 	
 	reshape long var val, i(id layer xcut) j(marker)
 	
+	
+	
 	// variable type check
 	
 	if substr("`: type var'",1,3) != "str" {
@@ -179,6 +203,7 @@ preserve
 		cap ren var name
 		encode name, gen(var) // alphabetical organization
 	}
+	
 	
 	
 	gen layer2 = layer
@@ -258,7 +283,8 @@ preserve
 	gen double y2 = heightsum
 
 
-
+	
+	
 	*** add gap
 
 	tempvar mygap
@@ -305,6 +331,8 @@ preserve
 		
 			
 	}
+	
+	
 	
 	gsort layer2 marker var markme `ssort2'   // this determines the second sort
 
@@ -359,7 +387,7 @@ preserve
 		}	
 		
 	}
-
+	
 
 	gen stack_x = layer2
 
