@@ -9,8 +9,8 @@
 
 ---
 
-# sankey v1.71
-(15 Jan 2024)
+# sankey v1.72
+(12 Feb 2024)
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
@@ -25,7 +25,7 @@ SSC (**v1.7**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.71**):
+GitHub (**v1.72**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -63,15 +63,15 @@ graph set window fontface "Arial Narrow"
 The syntax for the latest version is as follows:
 
 ```stata
-sankey value [if] [in], from(var) to(var) by(var) 
-            [ palette(str) colorby(layer|level) colorvar(var) stock colorvarmiss(str) colorboxmiss(str)
-              smooth(1-8) gap(num) recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num) ctposition(bot|top)
-              labangle(str) labsize(str) labposition(str) labgap(str) showtotal labprop labscale(num) 
+
+sankey value [if] [in], from(var) to(var) 
+            [ by(var) palette(str) colorby(layer|level) colorvar(var) stock colorvarmiss(str) colorboxmiss(str)
+              smooth(1-8) gap(num) recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num) ctposition(bot|top) 
+              ctcolor(str) labangle(str) labsize(str) labposition(str) labgap(str) showtotal labprop labscale(num) 
               valsize(str) valcondition(num) format(str) valgap(str) novalues valprop valscale(num)
-              novalright novalleft nolabels sort1(value|name[, reverse]) sort2(value|order[, reverse])
+              novalright novalleft nolabels sort1(value| name[, reverse]) sort2(value| order[, reverse])
               lwidth(str) lcolor(str) alpha(num) offset(num) boxwidth(str) percent
               title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) saving(str) ]
-
 ```
 
 See the help file `help sankey` for details.
@@ -426,6 +426,15 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+**v1.72 (12 Feb 2024)**
+- Fixed `labprop` from wrong calculation the label sizes.
+- `valcond()` now passes on to box labels. Was removed but has been put back in.
+- `by()` changed to optional. Assumes one layer if not specified. This is mostly a quality of life improvement. A warning message is displayed to ensure that `by()` is not left out by mistake.
+- `ctsize()` converted to string allow size names.
+- `ctcolor()` added.
+- Help file improved.
+- Minor code cleanups
 
 **v1.71 (15 Jan 2024)**
 - Fixed a bug where numerical `from()` and `to()` variables with value labels were messing up the labels in the final figure (reported by Ian White).

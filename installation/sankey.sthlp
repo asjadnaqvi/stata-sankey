@@ -1,7 +1,7 @@
 {smcl}
-{* 15Jan2024}{...}
+{* 12Feb2024}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.71 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.72 (GitHub)}}
 
 {hline}
 
@@ -10,12 +10,12 @@
 {marker syntax}{title:Syntax}
 {p 8 15 2}
 
-{cmd:sankey} {it:value} {ifin}, {cmdab:f:rom}({it:var}) {cmdab:t:o}({it:var}) {cmd:by}({it:var}) 
-            {cmd:[} {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:colorvar}({it:var}) {cmd:stock} {cmd:colorvarmiss}({it:str}) {cmd:colorboxmiss}({it:str})
-              {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) {cmdab:ctitle:s}({it:list}) {cmdab:ctg:ap}({it:num}) {cmdab:cts:ize}({it:num}) {cmdab:ctpos:ition}({it:bot}|{it:top})
-              {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al} {cmd:labprop} {cmd:labscale}({it:num}) 
+{cmd:sankey} {it:value} {ifin}, {cmdab:f:rom}({it:var}) {cmdab:t:o}({it:var}) 
+            {cmd:[} {cmd:by}({it:var}) {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:colorvar}({it:var}) {cmd:stock} {cmd:colorvarmiss}({it:str}) {cmd:colorboxmiss}({it:str})
+              {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) {cmdab:ctitle:s}({it:list}) {cmdab:ctg:ap}({it:num}) {cmdab:cts:ize}({it:num}) {cmdab:ctpos:ition}({it:bot}|{it:top}) 
+              {cmdab:ctc:olor}({it:str}) {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al} {cmd:labprop} {cmd:labscale}({it:num}) 
               {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:num}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues} {cmd:valprop} {cmd:valscale}({it:num})
-              {cmdab:novalr:ight} {cmdab:novall:eft} {cmdab:nolab:els} {cmd:sort1}({it:value}|{it:name}[{it:, reverse}]) {cmd:sort2}({it:value}|{it:order}[{it:, reverse}])
+              {cmdab:novalr:ight} {cmdab:novall:eft} {cmdab:nolab:els} {cmd:sort1}({it:value}| {it:name}[{it:, reverse}]) {cmd:sort2}({it:value}| {it:order}[{it:, reverse}])
               {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmdab:boxw:idth}({it:str}) {cmd:percent}
               {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) {cmd:saving}({it:str}) {cmd:]}
 
@@ -27,15 +27,18 @@ Please report errors/bugs/enhancement requests on {browse "https://github.com/as
 {synopthdr}
 {synoptline}
 
-{p2coldent : {opt sankey numvar, from() to() by()}}The command plots a numeric {it:numvar} variable that is defined by source {opt from()} and destination {opt to()}
+{p2coldent : {opt sankey numvar, from() to()}}The command plots a numeric {it:numvar} variable that is defined by source {opt from()} and destination {opt to()}
 across {opt by()} levels. Both {opt from()} and {opt to()} should be string variables. If they are not, then they are converted to strings. This is to ensure that 
-mapping across {opt by()} levels remains consistent. The level {opt by()} should be a numeric variable defined in increments of 1.{p_end}
+mapping across {opt by()} levels remains consistent.{p_end}
+
+{p2coldent : {opt by(var)}}Here the layers variable can specified. The level {opt by()} should be a numeric variable defined in increments of 1. If {opt by()} is not 
+given, then the data is assumed to have one layer. In this case, a warning about the assumption is also displayed.{p_end}
 
 {p2coldent : {opt palette(name)}}Color name is any named scheme defined in the {stata help colorpalette:colorpalette} package. Default is {stata colorpalette tableau:{it:tableau}}.{p_end}
 
 {p2coldent : {opt sort1(name|value[, reverse])}}Users can sort the boxes for each layer by using {ul:value} or {ul:name} (default).
 The {opt sort1(value)} organizes the boxes based on their values, while {opt sort1(name)} arranges them alphabetically.
-Both can be combined with reverse, e.g. {opt sort1(value, reverse)} or {opt sortby(name, reverse)}. Note that you can specify a custom sort by using value labels.{p_end}
+The command can be combined with reverse, e.g. {opt sort1(value, reverse)} or {opt sort1(name, reverse)}. Note that you can specify a custom sort by using value labels.{p_end}
 
 {p2coldent : {opt sort2(order|vaue[, reverse])}}Users can sort the links between the boxes using {ul:value} or {ul:order} (default).
 The {opt sort2(value)} arranges the links numerically, while {opt sort2(order)} arranges them in the order they originate. The latter is also aesthetically more pleasing
@@ -80,7 +83,8 @@ Use cautiously.{p_end}
 
 {p2coldent : {opt labprop}}Scale the bar labels based on the relative stocks.{p_end}
 
-{p2coldent : {opt labscale(num)}}Scale factor of {opt labprop}. Default value is {opt labscale(0.3333)}. Advance option, use carefully.{p_end}
+{p2coldent : {opt labscale(num)}}Scale factor of {opt labprop}. Default value is {opt labscale(0.3333)}. Values closer to zero result in more exponential scaling, while values closer
+to one are almost linear scaling. Advance option, use carefully.{p_end}
 
 {p2coldent : {opt laba:ngle(str)}}The angle of the bar labels. Default is {opt laba(90)} for vertical labels.{p_end}
 
@@ -128,7 +132,9 @@ names as {opt ctitle("My name1" "My name2" "My name3" "...")}. Please make sure 
 
 {p2coldent : {opt cts:ize(num)}}The size of the column titles. Default is {opt cts(2.5)}.{p_end}
 
-{p2coldent : {opt ctg:ap(num)}}The gap of the column titles. Default is {opt ctg(0)}.{p_end}
+{p2coldent : {opt ctg:ap(num)}}The gap of the column titles in pixels. Default is {opt ctg(0)}.{p_end}
+
+{p2coldent : {opt ctc:olor(str)}}The color of the column titles. Default is {opt ctc(black)}.{p_end}
 
 {p2coldent : {opt ctpos:ition(bot|top)}}The position of column titles. No option defaults to {opt ctpos(bot)}. Might still need adjustment via {opt ctgap()}.{p_end}
 
@@ -151,7 +157,7 @@ This is particularly helpful if several layers are plotted.{p_end}
 
 {title:Dependencies}
 
-The {browse "http://repec.sowi.unibe.ch/stata/palettes/index.html":palette} package (Jann 2018, 2022) is required for {opt sankey}:
+The {browse "http://repec.sowi.unibe.ch/stata/palettes/index.html":palette} package (Jann 2018, 2022) is required:
 
 {stata ssc install palettes, replace}
 {stata ssc install colrspace, replace}
@@ -168,6 +174,7 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Version history}
 
+- {bf:1.72} : {opt labprop}, {opt valcond()} fixed. {opt ctcolor()} added. {opt by()} changed to optional. Assumes one layer with a warning.
 - {bf:1.71} : Fixed a bug where from() and to() value labels were overwriting each other.
 - {bf:1.7}  : Fixed {opt valcond()} dropping bar values, and fixed ctitles color to black. Added {opt percent} (beta), {opt ctpos()}.
 - {bf:1.61} : Adding saving() option. 
@@ -184,8 +191,8 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.71
-This release : 15 Jan 2024
+Version      : {bf:sankey} v1.72
+This release : 12 Feb 2024
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
