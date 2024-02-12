@@ -19,7 +19,7 @@ This package allows users to draw Sankey plots in Stata. It is based on the [San
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-SSC (**v1.7**):
+SSC (**v1.71**):
 
 ```
 ssc install sankey, replace
@@ -101,7 +101,7 @@ Let's test the `sankey` command:
 sankey value, from(source) to(destination) by(layer)
 ```
 
-<img src="/figures/sankey1.png" height="600">
+<img src="/figures/sankey1.png" width="100%">
 
 
 ### Smooth 
@@ -110,13 +110,13 @@ sankey value, from(source) to(destination) by(layer)
 sankey value, from(source) to(destination) by(layer) smooth(2)
 ```
 
-<img src="/figures/sankey2_1.png" height="600">
+<img src="/figures/sankey2_1.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) smooth(8)
 ```
 
-<img src="/figures/sankey2_2.png" height="600">
+<img src="/figures/sankey2_2.png" width="100%">
 
 
 ### Re-center
@@ -125,14 +125,14 @@ sankey value, from(source) to(destination) by(layer) smooth(8)
 sankey value, from(source) to(destination) by(layer) recenter(bot)
 ```
 
-<img src="/figures/sankey3_1.png" height="600">
+<img src="/figures/sankey3_1.png" width="100%">
 
 
 ```
 sankey value, from(source) to(destination) by(layer) recenter(top)
 ```
 
-<img src="/figures/sankey3_2.png" height="600">
+<img src="/figures/sankey3_2.png" width="100%">
 
 ### Gaps
 
@@ -140,14 +140,14 @@ sankey value, from(source) to(destination) by(layer) recenter(top)
 sankey value, from(source) to(destination) by(layer) gap(0)
 ```
 
-<img src="/figures/sankey4_1.png" height="600">
+<img src="/figures/sankey4_1.png" width="100%">
 
 
 ```
 sankey value, from(source) to(destination) by(layer) gap(20)
 ```
 
-<img src="/figures/sankey4_2.png" height="600">
+<img src="/figures/sankey4_2.png" width="100%">
 
 ### Values
 
@@ -155,7 +155,7 @@ sankey value, from(source) to(destination) by(layer) gap(20)
 sankey value, from(source) to(destination) by(layer) noval showtot
 ```
 
-<img src="/figures/sankey5.png" height="600">
+<img src="/figures/sankey5.png" width="100%">
 
 
 ### Sort (v1.6)
@@ -164,43 +164,43 @@ sankey value, from(source) to(destination) by(layer) noval showtot
 sankey value, from(source) to(destination) by(layer) sort1(name)
 ```
 
-<img src="/figures/sankey5_1.png" height="600">
+<img src="/figures/sankey5_1.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) sort1(value)
 ```
 
-<img src="/figures/sankey5_2.png" height="600">
+<img src="/figures/sankey5_2.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) sort1(value) sort2(value)
 ```
 
-<img src="/figures/sankey5_2_1.png" height="600">
+<img src="/figures/sankey5_2_1.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(value)
 ```
 
-<img src="/figures/sankey5_2_2.png" height="600">
+<img src="/figures/sankey5_2_2.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(value, reverse) 
 ```
 
-<img src="/figures/sankey5_2_3.png" height="600">
+<img src="/figures/sankey5_2_3.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(order) 
 ```
 
-<img src="/figures/sankey5_2_4.png" height="600">
+<img src="/figures/sankey5_2_4.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(order, reverse) 
 ```
 
-<img src="/figures/sankey5_2_5.png" height="600">
+<img src="/figures/sankey5_2_5.png" width="100%">
 
 
 Custom sorting on a value:
@@ -234,7 +234,7 @@ lab val destination2 labels
 sankey value, from(source2) to(destination2) by(layer) 
 ```
 
-<img src="/figures/sankey5_2_6.png" height="600">
+<img src="/figures/sankey5_2_6.png" width="100%">
 
 
 ### boxwidth
@@ -243,7 +243,7 @@ sankey value, from(source2) to(destination2) by(layer)
 sankey value, from(source) to(destination) by(layer) boxwid(5)
 ```
 
-<img src="/figures/sankey5_3.png" height="600">
+<img src="/figures/sankey5_3.png" width="100%">
 
 
 ### valcond
@@ -252,13 +252,13 @@ sankey value, from(source) to(destination) by(layer) boxwid(5)
 sankey value, from(source) to(destination) by(layer) valcond(200)
 ```
 
-<img src="/figures/sankey5_4.png" height="600">
+<img src="/figures/sankey5_4.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) valcond(300)
 ```
 
-<img src="/figures/sankey5_5.png" height="600">
+<img src="/figures/sankey5_5.png" width="100%">
 
 
 ### Palettes
@@ -267,13 +267,13 @@ sankey value, from(source) to(destination) by(layer) valcond(300)
 sankey value, from(source) to(destination) by(layer) palette(CET C6)
 ```
 
-<img src="/figures/sankey6.png" height="600">
+<img src="/figures/sankey6.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) colorby(level)
 ```
 
-<img src="/figures/sankey6_1.png" height="600">
+<img src="/figures/sankey6_1.png" width="100%">
 
 
 ### color by variable (v1.4)
@@ -284,7 +284,7 @@ gen trace1 = 1 if source=="App"
 sankey value, from(source) to(destination) by(layer) colorvar(trace1)
 ```
 
-<img src="/figures/sankey6_2.png" height="600">
+<img src="/figures/sankey6_2.png" width="100%">
 
 ```
 cap drop trace2
@@ -297,27 +297,27 @@ replace trace2 = 4 if  source=="App" & destination=="Total" & layer==3
 sankey value, from(source) to(destination) by(layer) colorvar(trace2)
 ```
 
-<img src="/figures/sankey6_3.png" height="600">
+<img src="/figures/sankey6_3.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) colorvar(trace2) palette(Oranges)
 ```
 
-<img src="/figures/sankey6_4.png" height="600">
+<img src="/figures/sankey6_4.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) colorvar(trace2) palette(Blues) ///
  colorvarmiss(gs13) colorboxmiss(gs13)
 ```
 
-<img src="/figures/sankey6_5.png" height="600">
+<img src="/figures/sankey6_5.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) colorvar(trace2) ///
 palette(blue*0.1 blue*0.3 blue*0.5 blue*0.7) colorvarmiss(gs13) colorboxmiss(gs13)
 ```
 
-<img src="/figures/sankey6_6.png" height="600">
+<img src="/figures/sankey6_6.png" width="100%">
 
 ### column titles (v1.4)
 
@@ -325,25 +325,25 @@ palette(blue*0.1 blue*0.3 blue*0.5 blue*0.7) colorvarmiss(gs13) colorboxmiss(gs1
 sankey value, from(source) to(destination) by(layer) ctitles(Cat1 Cat2 Cat3 Cat4 Cat5)
 ```
 
-<img src="/figures/sankey6_7.png" height="600">
+<img src="/figures/sankey6_7.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) ctitles(Cat1 Cat2 Cat3 Cat4 Cat5) ctg(-100)
 ```
 
-<img src="/figures/sankey6_8.png" height="600">
+<img src="/figures/sankey6_8.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) ctitles("Cat 1" "Cat 2" "Cat 3" "Cat 4" "Cat 5") ctg(-100)
 ```
 
-<img src="/figures/sankey6_9.png" height="600">
+<img src="/figures/sankey6_9.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) ctitles("Cat 1" "Cat 2" "Cat 3" "Cat 4" "Cat 5") ctpos(top) ctg(100) recenter(top)
 ```
 
-<img src="/figures/sankey6_9_1.png" height="600">
+<img src="/figures/sankey6_9_1.png" width="100%">
 
 
 ### label rotation and offset
@@ -353,7 +353,7 @@ sankey value, from(source) to(destination) by(layer) noval showtot palette(CET C
 	laba(0) labpos(3) labg(-1) offset(10)
 ```
 
-<img src="/figures/sankey6_10.png" height="600">
+<img src="/figures/sankey6_10.png" width="100%">
 
 
 ### hide values and labels (v1.5)
@@ -362,25 +362,25 @@ sankey value, from(source) to(destination) by(layer) noval showtot palette(CET C
 sankey value, from(source) to(destination) by(layer) novalleft
 ```
 
-<img src="/figures/sankey8_1.png" height="600">
+<img src="/figures/sankey8_1.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) novalright
 ```
 
-<img src="/figures/sankey8_2.png" height="600">
+<img src="/figures/sankey8_2.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) noval
 ```
 
-<img src="/figures/sankey8_3.png" height="600">
+<img src="/figures/sankey8_3.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) nolabels
 ```
 
-<img src="/figures/sankey8_4.png" height="600">
+<img src="/figures/sankey8_4.png" width="100%">
 
 
 ### proportional values and labels (v1.5)
@@ -390,13 +390,13 @@ sankey value, from(source) to(destination) by(layer) nolabels
 sankey value, from(source) to(destination) by(layer) valprop vals(2) 
 ```
 
-<img src="/figures/sankey9_1.png" height="600">
+<img src="/figures/sankey9_1.png" width="100%">
 
 ```
 sankey value, from(source) to(destination) by(layer) labprop labs(2)
 ```
 
-<img src="/figures/sankey9_2.png" height="600">
+<img src="/figures/sankey9_2.png" width="100%">
 
 
 ### stocks (v1.6)
@@ -405,7 +405,7 @@ sankey value, from(source) to(destination) by(layer) labprop labs(2)
 sankey value, from(source) to(destination) by(layer) stock
 ```
 
-<img src="/figures/sankey10.png" height="600">
+<img src="/figures/sankey10.png" width="100%">
 
 
 ### All together
