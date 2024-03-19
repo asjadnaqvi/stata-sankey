@@ -9,8 +9,8 @@
 
 ---
 
-# sankey v1.72
-(12 Feb 2024)
+# sankey v1.73
+(16 Mar 2024)
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
@@ -25,7 +25,7 @@ SSC (**v1.71**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.72**):
+GitHub (**v1.73**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -63,7 +63,6 @@ graph set window fontface "Arial Narrow"
 The syntax for the latest version is as follows:
 
 ```stata
-
 sankey value [if] [in], from(var) to(var) 
             [ by(var) palette(str) colorby(layer|level) colorvar(var) stock colorvarmiss(str) colorboxmiss(str)
               smooth(1-8) gap(num) recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num) ctposition(bot|top) 
@@ -79,10 +78,10 @@ See the help file `help sankey` for details.
 The most basic use is as follows:
 
 ```
-sankey value, from(var1) to(var2) by(level)
+sankey value, from(var1) to(var2) [by(level)]
 ```
 
-where `var1` and `var2` are source and destination variables respectively against which the `value` variable is plotted. The `by()` variable defines the levels.
+where `var1` and `var2` are source and destination variables respectively against which the `value` variable is plotted. The `by()` variable defines the levels and has been made optional since v1.72. If this option is not specified, then one level is assumed.
 
 
 
@@ -426,6 +425,12 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+
+**v1.73 (16 Mar 2024)**
+- If the `from()` and `to()` variables have value labels, then the order of the value labels is respected. This allows the users to have full control of the order of the drawing of the layers through value labels (requested by Katie Naylor + others).
+- The command now throws an error if `from()` and `to()` have different format types. Both have to be either string or numeric variables. This was necessary to implement in order to implement the above change.
+- Minor code cleanups.
 
 **v1.72 (12 Feb 2024)**
 - Fixed `labprop` from wrong calculation the label sizes.

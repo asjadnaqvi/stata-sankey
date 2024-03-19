@@ -1,6 +1,7 @@
-*! sankey v1.72 (12 Feb 2024)
+*! sankey v1.73 (18 Mar 2024)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+*v1.73 (18 Mar 2024): Values determine the order of drawing. Add caution that numbers mean the same across the categories.
 *v1.72 (12 Feb 2024): labprop fixes, valcond() fixes. by() changed to optional. Assumes one layer with a warning. ctcolor() added. ctsize() switched to string.
 *v1.71 (15 Jan 2024): fixed a bug where value labels of to() and from() were overwriting each other.
 *v1.7  (06 Nov 2023): fix valcond() dropping labels in bars, added percent (still in beta), added ctpos() option. minor cleanups  
@@ -76,17 +77,17 @@ version 15
 	
 	
 	if "`stype2'" != "" & "`stype2'" != "order" & "`stype2'" != "value" {
-		di as err "Valid options for {bf:sort2()} are {it:order (default)} or {it:value}."
+		display as error "Valid options for {bf:sort2()} are {it:order (default)} or {it:value}."
 		exit 198
 	}	
 	
 	if "`colorby'" != "" & "`colorvar'" != "" {
-		di as err "Both colorby() and colorvar() are not allowed."
+		display as error "Both colorby() and colorvar() are not allowed."
 		exit 198
 	}
 	
 	if "`novalleft'" != "" & "`novalright'" != "" {
-		di as err "Both {it:novalleft} and {it:novalright} are not allowed. If you want to hide values use the {it:novalues} option instead."
+		display as error "Both {it:novalleft} and {it:novalright} are not allowed. If you want to hide values use the {it:novalues} option instead."
 		exit 198
 	}	
 	
@@ -95,7 +96,7 @@ version 15
 		qui gen `_temp' = mod(`colorvar',1)
 		summ `_temp', meanonly
 		if r(max) > 0 {
-			di as err "colorvar() needs to be integers starting at 1."
+			display as error "colorvar() needs to be integers starting at 1."
 			exit 198
 		}
 	}
@@ -131,26 +132,51 @@ preserve
 	
 	keep `varlist' `from' `to' `by' clrlvl
 	
-		// convert value labels to strings
-		cap confirm numeric var `from'
-		if _rc==0 {
-			if "`: value label `from''" != "" {
-				decode `from', gen(temp1)		
-				drop `from'
-				ren temp1 `from'
-			}
+		// drop missing categories
+		cap confirm numeric var `from'	
+		if !_rc {  
+			local fcheck = 0
+			drop if `from'==.
+		}
+		else {
+			local fcheck = 1
+			drop if `from'==""
+		}
+	
+		cap confirm numeric var `to'	
+		if !_rc {  
+			local tcheck = 0
+			drop if `to'==.
+		}
+		else {
+			local tcheck = 1
+			drop if `to'==""
+		}	
+	
+		if ("`fcheck'"=="0" & "`tcheck'"=="1") | ("`tcheck'"=="0" & "`fcheck'"=="1") {
+			display as error "Format error: {bf:from()} and {bf:to()} have different formats. They should be both either numeric or string variables."
+			exit 198
+		}
+	
+	
+		// if strings, convert to numeric, otherwise leave them alone.
+		
+		/*
+		cap confirm string var `from'
+		if !_rc {
+			encode `from', gen(_temp1)		
+			drop `from'
+			ren _temp1 `from'
 		}
 		
-		cap confirm numeric var `to'
-		if _rc==0 {
-			if "`: value label `to''" != "" {
-				decode `to', gen(temp2)		
-				drop `to'
-				ren temp2 `to'
-			}
-		}		
-	
-	
+		cap confirm string var `to'
+		if !_rc {
+			encode `to', gen(_temp2)		
+			drop `to'
+			ren _temp2 `to'
+		}	
+			*/
+
 	collapse (sum) `varlist' (mean) clrlvl , by(`from' `to' `by')
 
 	gen markme = .
