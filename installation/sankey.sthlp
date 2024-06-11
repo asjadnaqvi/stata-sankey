@@ -186,7 +186,7 @@ Twitter      : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
 
 {title:Feedback}
 
-Please submit bugs, errors, feature requests on {browse "https://github.com/asjadnaqvi/stata-alluvial/issues":GitHub} by opening a new issue.
+Please submit bugs, errors, feature requests on {browse "https://github.com/asjadnaqvi/stata-sankey/issues":GitHub} by opening a new issue.
 
 
 {title:Citation guidelines}
