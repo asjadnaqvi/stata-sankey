@@ -87,18 +87,7 @@ where `var1` and `var2` are source and destination variables respectively agains
 Software packages take countless hours of programming, testing, and bug fixing. If you use this package, then a citation would be highly appreciated. Suggested citations:
 
 
-SSC citation (updated once new versions are submitted)
-```
-Asjad Naqvi, 2022. "SANKEY: Stata module for Sankey diagrams," Statistical Software Components S459154, Boston College Department of Economics, revised 17 May 2024.
-```
-
-*or*
-
-```
-Naqvi, A. (2024). Stata package "sankey" version 1.74. Release date 11 June 2024. https://github.com/asjadnaqvi/stata-sankey.
-```
-
-*or in BibTeX*
+*in BibTeX*
 
 ```
 @software{sankey,
@@ -108,6 +97,20 @@ Naqvi, A. (2024). Stata package "sankey" version 1.74. Release date 11 June 2024
    version = {1.74},
    date = {2024-06-11}
 }
+
+*or simple text*
+
+```
+Naqvi, A. (2024). Stata package "sankey" version 1.74. Release date 11 June 2024. https://github.com/asjadnaqvi/stata-sankey.
+```
+
+
+*or SSC citation (updated once new versions are submitted)*
+
+```
+Asjad Naqvi, 2022. "SANKEY: Stata module for Sankey diagrams," Statistical Software Components S459154, Boston College Department of Economics, revised 17 May 2024.
+```
+
 ```
 
 
