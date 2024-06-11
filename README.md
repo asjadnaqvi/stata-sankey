@@ -97,6 +97,7 @@ Software packages take countless hours of programming, testing, and bug fixing. 
    version = {1.74},
    date = {2024-06-11}
 }
+```
 
 *or simple text*
 
@@ -109,8 +110,6 @@ Naqvi, A. (2024). Stata package "sankey" version 1.74. Release date 11 June 2024
 
 ```
 Asjad Naqvi, 2022. "SANKEY: Stata module for Sankey diagrams," Statistical Software Components S459154, Boston College Department of Economics, revised 17 May 2024.
-```
-
 ```
 
 
