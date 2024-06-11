@@ -193,8 +193,6 @@ Please submit bugs, errors, feature requests on {browse "https://github.com/asja
 
 Suggested citation guidlines for this package:
 
-Asjad Naqvi, 2022. "SANKEY: Stata module for Sankey diagrams," Statistical Software Components S459154, Boston College Department of Economics, revised 17 May 2024.
-
 Naqvi, A. (2024). Stata package "sankey" version 1.73. Release date 18 March 2024. https://github.com/asjadnaqvi/stata-sankey.
 
 @software{sankey,
