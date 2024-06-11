@@ -5,7 +5,7 @@
 
 ---
 
-[Installation](#Installation) | [Syntax](#Syntax) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
+[Installation](#Installation) | [Syntax](#Syntax) | [Citation](#Citation) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
 
 ---
 
@@ -80,8 +80,33 @@ The most basic use is as follows:
 sankey value, from(var1) to(var2) [by(level)]
 ```
 
-where `var1` and `var2` are source and destination variables respectively against which the `value` variable is plotted. The `by()` variable defines the levels and has been made optional since v1.72. If this option is not specified, then one level is assumed.
+where `var1` and `var2` are source and destination variables respectively against which the `value` variable is plotted. The `by()` variable defines the levels and is optional since v1.72.
 
+
+## Citation
+Software packages take countless hours of programming, testing, and bug fixing. If you use this package, then a citation would be highly appreciated. Suggested citations:
+
+```
+Asjad Naqvi, 2022. "SANKEY: Stata module for Sankey diagrams," Statistical Software Components S459154, Boston College Department of Economics, revised 17 May 2024.
+```
+
+*or*
+
+```
+Naqvi, A. (2024). Stata package "sankey" version 1.73. Release date 18 March 2024. https://github.com/asjadnaqvi/stata-sankey.
+```
+
+*or in BibTeX*
+
+```
+@software{sankey,
+   author = {Naqvi, Asjad},
+   title = {Stata package ``sankey''},
+   url = {https://github.com/asjadnaqvi/stata-sankey},
+   version = {1.73},
+   date = {2024-03-18}
+}
+```
 
 
 ## Examples
