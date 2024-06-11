@@ -5,7 +5,7 @@
 
 ---
 
-[Installation](#Installation) | [Syntax](#Syntax) | [Citation guidelines](#Citation) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
+[Installation](#Installation) | [Syntax](#Syntax) | [Citation guidelines](#Citation-guidelines) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
 
 ---
 
@@ -83,7 +83,7 @@ sankey value, from(var1) to(var2) [by(level)]
 where `var1` and `var2` are source and destination variables respectively against which the `value` variable is plotted. The `by()` variable defines the levels and is optional since v1.72.
 
 
-## Citation
+## Citation guidelines
 Software packages take countless hours of programming, testing, and bug fixing. If you use this package, then a citation would be highly appreciated. Suggested citations:
 
 ```
