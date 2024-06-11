@@ -69,8 +69,7 @@ sankey value [if] [in], from(var) to(var)
               ctcolor(str) labangle(str) labsize(str) labposition(str) labgap(str) showtotal labprop labscale(num) 
               valsize(str) valcondition(num) format(str) valgap(str) novalues valprop valscale(num)
               novalright novalleft nolabels sort1(value| name[, reverse]) sort2(value| order[, reverse])
-              lwidth(str) lcolor(str) alpha(num) offset(num) boxwidth(str) percent
-              title(str) subtitle(str) note(str) scheme(str) name(str) xsize(num) ysize(num) saving(str) ]
+              lwidth(str) lcolor(str) alpha(num) offset(num) boxwidth(str) percent * ]
 ```
 
 See the help file `help sankey` for details.
