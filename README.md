@@ -5,7 +5,7 @@
 
 ---
 
-[Installation](#Installation) | [Syntax](#Syntax) | [Citation](#Citation) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
+[Installation](#Installation) | [Syntax](#Syntax) | [Citation guidelines](#Citation) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
 
 ---
 
