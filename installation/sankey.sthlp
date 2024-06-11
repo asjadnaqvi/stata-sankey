@@ -1,7 +1,7 @@
 {smcl}
-{* 12Feb2024}{...}
+{* 11Jun2024}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.72 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.74 (GitHub)}}
 
 {hline}
 
@@ -16,8 +16,8 @@
               {cmdab:ctc:olor}({it:str}) {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al} {cmd:labprop} {cmd:labscale}({it:num}) 
               {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:num}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues} {cmd:valprop} {cmd:valscale}({it:num})
               {cmdab:novalr:ight} {cmdab:novall:eft} {cmdab:nolab:els} {cmd:sort1}({it:value}| {it:name}[{it:, reverse}]) {cmd:sort2}({it:value}| {it:order}[{it:, reverse}])
-              {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmdab:boxw:idth}({it:str}) {cmd:percent}
-              {cmd:title}({it:str}) {cmd:subtitle}({it:str}) {cmd:note}({it:str}) {cmd:scheme}({it:str}) {cmd:name}({it:str}) {cmd:xsize}({it:num}) {cmd:ysize}({it:num}) {cmd:saving}({it:str}) {cmd:]}
+              {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmdab:boxw:idth}({it:str}) {cmd:percent} {cmd:wrap}({it:num}) *
+            {cmd:]}
 
 {p 4 4 2}
 Please report errors/bugs/enhancement requests on {browse "https://github.com/asjadnaqvi/stata-sankey/issues":GitHub}. 
@@ -80,6 +80,8 @@ Use cautiously.{p_end}
 {p 4 4 2}{ul:{it:Bars}}
 
 {p2coldent : {opt labs:ize(str)}}The size of the bar labels. Default is {opt labs(2)}.{p_end}
+
+{p2coldent : {opt wrap(num)}}Wrap the labels after a number of characters. For example, {opt wrap(50)} will do a line break every 50 characters.{p_end}
 
 {p2coldent : {opt labprop}}Scale the bar labels based on the relative stocks.{p_end}
 
@@ -144,12 +146,7 @@ names as {opt ctitle("My name1" "My name2" "My name3" "...")}. Please make sure 
 {p2coldent : {opt offset(num)}}The value, in percentage of x-axis width, to extend the x-axis on the right-hand side. Default is {opt offset(0)}.
 This option is highly useful especially if labels are rotated with custom positions.{p_end}
 
-{p2coldent : {opt title()}, {opt subtitle()}, {opt note()}}These are standard twoway graph options.{p_end}
-
-{p2coldent : {opt scheme()}, {opt name()}, {opt saving()}}These are standard twoway graph options.{p_end}
-
-{p2coldent : {opt xsize()}, {opt ysize()}}These standard twoway options can be used to space out the layers.
-This is particularly helpful if several layers are plotted.{p_end}
+{p2coldent : {opt *}}All other standard twoway options.{p_end}
 
 {synoptline}
 {p2colreset}{...}
@@ -172,27 +169,11 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {hline}
 
-{title:Version history}
-
-- {bf:1.72} : {opt labprop}, {opt valcond()} fixed. {opt ctcolor()} added. {opt by()} changed to optional. Assumes one layer with a warning.
-- {bf:1.71} : Fixed a bug where from() and to() value labels were overwriting each other.
-- {bf:1.7}  : Fixed {opt valcond()} dropping bar values, and fixed ctitles color to black. Added {opt percent} (beta), {opt ctpos()}.
-- {bf:1.61} : Adding saving() option. 
-- {bf:1.6}  : Rewrite of core routines. {opt sortby()} split into {opt sort1()} and {opt sort2()}. New option {opt stock} added.
-- {bf:1.51} : Add a string check for {opt from()} and {opt by()} variables.
-- {bf:1.5}  : Added {opt labprop}, {opt valprop}, {opt labscale()}, {opt valnoright}, {opt valnoleft}, {opt sortby(, reverse)}.
-- {bf:1.4}  : Fixed the unbalanced panels. Fixed gaps between categories. Add column labels option. Added custom colors option.
-- {bf:1.3}  : Node bundling added to align nodes across groups. Options {opt sortby()} and {opt boxwidth()} added.
-- {bf:1.21} : Bug fixes for 1.2. {opt labcolor()} added.
-- {bf:1.2}  : Unbalanced in-coming and out-going groups now properly displace. Groups ending and starting in the middle now allowed.
-- {bf:1.1}  : Enhancements. {opt valformat()} renamed to {opt format()}. {opt offset} added to displace x-axis range.
-- {bf:1.0}  : First version.
-
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.72
-This release : 12 Feb 2024
+Version      : {bf:sankey} v1.74
+This release : 11 Jun 2024
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
@@ -203,10 +184,27 @@ E-mail       : asjadnaqvi@gmail.com
 Twitter      : {browse "https://twitter.com/AsjadNaqvi":@AsjadNaqvi}
 
 
-
 {title:Feedback}
 
 Please submit bugs, errors, feature requests on {browse "https://github.com/asjadnaqvi/stata-alluvial/issues":GitHub} by opening a new issue.
+
+
+{title:Citation guidelines}
+
+Suggested citation guidlines for this package:
+
+Asjad Naqvi, 2022. "SANKEY: Stata module for Sankey diagrams," Statistical Software Components S459154, Boston College Department of Economics, revised 17 May 2024.
+
+Naqvi, A. (2024). Stata package "sankey" version 1.73. Release date 18 March 2024. https://github.com/asjadnaqvi/stata-sankey.
+
+@software{sankey,
+   author = {Naqvi, Asjad},
+   title = {Stata package ``sankey''},
+   url = {https://github.com/asjadnaqvi/stata-sankey},
+   version = {1.74},
+   date = {2024-06-11}
+}
+
 
 {title:References}
 
@@ -219,4 +217,6 @@ Please submit bugs, errors, feature requests on {browse "https://github.com/asja
 
 {psee}
     {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb joyplot}, 
-	{helpb marimekko}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb streamplot}, {helpb sunburst}, {helpb treecluster}, {helpb treemap}
+	{helpb marimekko}, {helpb polarspike}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb streamplot}, {helpb sunburst}, {helpb treecluster}, {helpb treemap}, {helpb waffle}
+	
+or visit {browse "https://github.com/asjadnaqvi":GitHub} for detailed documentation and examples.	
