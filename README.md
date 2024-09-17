@@ -1,11 +1,14 @@
 
-![sankey-1](https://github.com/asjadnaqvi/stata-sankey/assets/38498046/b019b070-64c5-4d92-abdd-7774e1cefea6)
 
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-sankey) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-sankey) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-sankey) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-sankey) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-sankey)
 
+[Installation](#Installation) | [Syntax](#Syntax) | [Citation guidelines](#Citation-guidelines) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
+
 ---
 
-[Installation](#Installation) | [Syntax](#Syntax) | [Citation guidelines](#Citation-guidelines) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
+
+![sankey-1](https://github.com/asjadnaqvi/stata-sankey/assets/38498046/b019b070-64c5-4d92-abdd-7774e1cefea6)
+
 
 ---
 
@@ -19,7 +22,7 @@ This package allows users to draw Sankey plots in Stata. It is based on the [San
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-SSC (**v1.73**):
+SSC (**v1.74**):
 
 ```
 ssc install sankey, replace
