@@ -1,7 +1,8 @@
-*! sankey v1.74 (11 Jun 2024)
+*! sankey v1.8 (21 Sep 2024)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-*v1.74 (10 Jun 2024): add wrap() option.
+*v1.8  (21 Sep 2024): added align, fill, wrap(), n(). Major code cleanup
+*v1.74 (10 Jun 2024): added wrap() option.
 *v1.73 (18 Mar 2024): Values determine the order of drawing. Add caution that numbers mean the same across the categories.
 *v1.72 (12 Feb 2024): labprop fixes, valcond() fixes. by() changed to optional. Assumes one layer with a warning. ctcolor() added. ctsize() switched to string.
 *v1.71 (15 Jan 2024): fixed a bug where value labels of to() and from() were overwriting each other.
@@ -40,9 +41,9 @@ version 15
 		[ CTITLEs(string asis) CTGap(real 0) CTSize(string) colorvar(varname) colorvarmiss(string) colorboxmiss(string)  ] ///  // v1.4 options
 		[ valprop labprop valscale(real 0.33333) labscale(real 0.33333) NOVALRight NOVALLeft NOLABels ]      ///  // v1.5
 		[ stock sort1(string) sort2(string)  ]  /// // v1.6
-		[ percent ctpos(string) CTColor(string) ]    /// // v1.7 
-		[ align wrap(numlist >=0 max=1)  ]	///	
-		[ * ] 
+		[ percent ctpos(string) CTColor(string) * ]    /// // v1.7 
+		[ align fill wrap(numlist >=0 max=1) n(real 30)  ]	//	v1.8
+
 		
 
 	// check dependencies
@@ -63,8 +64,6 @@ version 15
 		local stype1  `1'
 		local srev1   `3'
 	}	
-	
-	
 	
 	if "`stype1'" != "" & "`stype1'" != "name" & "`stype1'" != "value" {
 		di as err "Valid options for {bf:sort1()} are {it:name (default)} or {it:value}."
@@ -110,11 +109,11 @@ version 15
 	// id    = sequence of points that form a shape.
 
 
-qui {
+quietly {
 preserve 	
 	
 	keep if `touse'
-	drop if `varlist' ==.
+	drop if missing(`varlist')
 	
 	if "`by'" == "" {
 		gen _layer = 1
@@ -207,8 +206,44 @@ preserve
 	
 	gen val2 	=   val1
 	
+	gen _empty = .	
 	
-	if "`percent'" != "" {   // suggestion by Mortiz Poll
+	if "`align'" != "" | "`fill'" != "" {
+			
+		summ layer, meanonly
+				local lmax = `r(max)' - 1
+				
+		forval i = 0/`lmax' {
+			local j = `i' + 1
+			qui levelsof var2 if layer==`i', local(lvls)
+			
+			foreach x of local lvls {
+					
+				qui count if var1 == "`x'" & layer==`j' 
+				
+				if `r(N)' == 0 {
+					set obs `=_N+1'
+					
+					replace _empty = 1 in   `=_N'
+					replace var1 = "`x'" in `=_N'
+					replace var2 = "`x'" in `=_N'
+					replace layer = `j'  in `=_N'
+					
+					
+					sum val2 if var2 == "`x'" & layer==`i' , meanonly
+					replace val1 = `r(max)' in `=_N'
+					replace val2 = `r(max)' in `=_N'
+					
+					sum xcut if var2 == "`x'" & layer==`i' , meanonly
+					replace xcut = `r(max)' in `=_N'
+				}
+			}
+		}	
+	}
+	
+	
+	
+	if "`percent'" != "" {   
 		tempvar aux1 aux2 total
 		
 		bysort layer (var1 var2): egen double `total' = sum(val1)
@@ -223,12 +258,62 @@ preserve
 	}
 	
 	
+	*** let's preserve the order here by aligning the layers (n*n-1 sorts)
 	
+	gen _sort0 = .
 	
+	if "`align'" != "" | "`fill'" != "" {
+		
+		sort layer var1 var2 val1
+		
+		// parent
+		replace _sort0 = _n if layer==0 // base layer
+		
+		summ layer, meanonly
+		local last = `r(max)'
+		
+		
+		forval i = 1/`last' {
+			local j = `i' - 1
+			levelsof var2 if layer== `j' , local(lvls)
+			
+			foreach x of local lvls {
+				summ _sort0 if layer==`j' & var2=="`x'", meanonly
+				replace _sort0=`r(min)' if var1=="`x'" & layer==`i'
+			}
+		}
+		
+		
+		sort _sort0 layer var1 var2  val1
+		
+		// children
+		forval k = 1/`last' {
+
+			gen _sort`k' = _n if layer==`k'
+			local m = `k' + 1
+			
+
+			forval i = `m'/`last' {
+				local j = `i' - 1
+				levelsof var2 if layer== `j' , local(lvls)
+				
+				foreach x of local lvls {
+					summ _sort`k' if layer==`j' & var2=="`x'", meanonly
+					replace _sort`k'=`r(min)' if var1=="`x'" & layer==`i'
+				}
+			}
+		}
+
+		
+		recode _sort* (.=0)
+		sort _sort*
+		
+	}
+
+	*** reshape
+
 	gen id = _n
-	
-	
-	reshape long var val, i(id layer xcut) j(marker)
+	reshape long var val , i(id layer xcut _sort*) j(marker)
 	
 	
 	
@@ -252,7 +337,7 @@ preserve
 	gen layer2 = layer
 	replace layer2 = layer2 + 1 if marker==2	
 
-		
+	
 	sort layer2 var marker
 
 	bysort layer2 var: egen double val_out_temp = sum(val) if marker==1 // how much value is sent out
@@ -262,23 +347,13 @@ preserve
 	bysort layer2 var: egen double val_in  = max(val_in_temp)
  	
 	drop *temp
-
-	sort layer var marker
 	recode val_in val_out (.=0)
 
-	
-	
-	
 	egen double height = rowmax(val_in val_out) // this is the maximum height for each category for each group.
 
 	
-	
-	
 	// sort by name or value
 
-
-	
-	
 	if "`stype1'"=="value"  {
 		if "`srev1'" == "reverse" {
 			local ssort1 -height -var
@@ -294,7 +369,7 @@ preserve
 		cap drop tag1
 	}
 
-	if "`stype1'"=="name" | "`stype1'"=="" {
+	if "`stype1'"=="name" {
 		if "`srev1'" == "reverse" {	
 			local ssort1 -var
 		}
@@ -302,23 +377,48 @@ preserve
 			local ssort1 var
 		}		
 		
-		gsort layer2 `ssort1'
+		gsort layer2  `ssort1' id
 		
 		egen tag2 = tag(layer2 var)
-		by layer2: gen order = sum(tag2) // sort by alphabetical order
+		by layer2 : gen order = sum(tag2) // sort by alphabetical order
 		cap drop tag2
 	}
 	
 
+	if "`stype1'"=="" & "`align'"=="" & "`fill'"=="" {
+		
+		if "`srev1'" == "reverse" {	
+			local ssort1 -var
+		}
+		else {
+			local ssort1 var
+		}	
+		
+		gsort layer2 `ssort1' id
+		
+		egen tag2 = tag(layer2 var)
+		by layer2 : gen order = sum(tag2) // take it as it is
+		cap drop tag2
+	
+	}
+	
+	if "`stype1'"=="" & ("`align'"!="" | "`fill'"!="") {
+		gsort layer2   id
+		
+		egen tag2 = tag(layer2 var)
+		by layer2 : gen order = sum(tag2) // take it as it is
+		cap drop tag2
+	
+	}		
+	
 	
 	egen temp = tag(layer2 var)
 	gen bar_order = sum(temp)
 	drop temp
 	
 	
-	
 	************************************
-	**** let's generate the spikes   ***
+	**** generate the spikes   ***
 	************************************
 
 	egen tag = tag(layer2 height order)
@@ -332,23 +432,18 @@ preserve
 	gen double y2 = heightsum
 
 
-	
-	
 	*** add gap
 
 	tempvar mygap
 	summ heightsum if tag==1, meanonly
 	local maxval = r(max) * `gap' / 100  
-	gen `mygap' = (order - 1) * `maxval' if tag==1
+	gen `mygap' = (order - 1) * `maxval' if tag==1 
 
 	replace y1 = y1 + `mygap'
 	replace y2 = y2 + `mygap'
 
 	cap drop heightsum
 
-	
-	
-	
 
 	*************************
 	** generate the links  **
@@ -380,8 +475,6 @@ preserve
 		else {
 			local ssort2 val // by value	
 		}
-		
-			
 	}
 	
 	
@@ -411,8 +504,7 @@ preserve
 			local smax = r(max)
 			
 			local displace = ((`ymax' - `ymin') - `smax' ) / 2
-			
-
+		
 			replace stack_start = stack_start + `ymin' + `displace' if layer2==`x' & marker==1 & var==`y'
 			replace stack_end   = stack_end   + `ymin' + `displace' if layer2==`x' & marker==1 & var==`y'
 			
@@ -432,20 +524,15 @@ preserve
 			
 			local displace = ((`ymax' - `ymin') - `smax' ) / 2
 			
-
 			replace stack_start = stack_start + `ymin' + `displace' if layer2==`x' & marker==2 & var==`y'
 			replace stack_end   = stack_end   + `ymin' + `displace' if layer2==`x' & marker==2 & var==`y'
 			
 		}	
-		
 	}
 	
 	
-
 	gen stack_x = layer2
-
 	sort layer2 markme id
-	
 	
 	
 	// mark the highest value and the layer
@@ -454,7 +541,7 @@ preserve
 	local hival = r(max)
 	
 	
-	//recenter
+	// recenter
 	
 	*** recenter to middle
 
@@ -487,22 +574,13 @@ preserve
 		replace stack_start = stack_start + `displace' if layer2==`x'		
 	}
 	
-	
-	if "`align'" != "" {  // start here
-		
-		
-		
-		
-	}
-	
-	
-	
+
 	// update the value of starting layer to total
 
 	
 	
 	*** generate the curves	
-	local newobs = 30	
+	local newobs = `n'	
 	expand `newobs'
 	sort id layer2
 	
@@ -583,16 +661,18 @@ preserve
 	gen arcx = `xtemp' + layer
 
 	
+	**** fine tune
+	if "`align'" != "" & "`fill'" == "" drop if _empty==1
 	
 
 	***** mid points for wedges
 	egen tag_spike = tag(layer2 var tag)
-	gen ymid = (y1 + y2) / 2 if tag_spike==1
+	gen double ymid = (y1 + y2) / 2 if tag_spike==1
 	
 	
 	***** mid points for sankey labels
 	egen tag_id = tag(id marker)
-	gen arcmid = (stack_end + stack_start) / 2 if tag_id==1
+	gen double arcmid = (stack_end + stack_start) / 2 if tag_id==1
 	
 	
 	egen layer_id = group(layer2) // layer id for coloring
@@ -617,28 +697,21 @@ preserve
 	if "`format'" 		== "" {
 		if "`percent'" != "" {
 			local format "%5.2f"
-			
 		}
 		else {
 			local format "%12.0f"
 		}
 	}
 	
-		
-
 	format val `format'	
 	
 	
 	if "`colorby'" == "layer" | "`colorby'" == "level" {
 		local switch 1
 	}
-	if "`colorby'" == "" {
-		local switch 0
-	}		
+	if "`colorby'" == "" local switch 0		
 		
-	if "`colorvar'" != "" {
-		local switch 2
-	}	
+	if "`colorvar'" != "" local switch 2	
 	
 	if "`palette'" == "" {
 		local palette tableau
@@ -752,7 +825,6 @@ preserve
 		}
 		
 
-		
 		if "`wrap'" != "" {
 			gen _length = length(lab2) if lab2!=""
 			summ _length, meanonly		
@@ -780,14 +852,10 @@ preserve
 				local labw = r(max)
 				
 				local boxlabel `boxlabel' (scatter ymid layer2 if tag_spike==1 & `_lablyr'==`x' & height >= `valcondition',  msymbol(none) mlabel(lab2) mlabsize(`labw') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) 
-			
 			}
-			
 		}
 		else {
-			
 			local boxlabel (scatter ymid layer2 if tag_spike==1  & height >= `valcondition',  msymbol(none) mlabel(lab2) mlabsize(`labsize') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) 
-			
 		}	
 	}	
 
@@ -801,7 +869,6 @@ preserve
 	
 
 
-	
 	**** arc labels
 	
 	if "`valprop'" != "" {
@@ -816,13 +883,11 @@ preserve
 		if "`valprop'" == "" {
 			
 			if  "`novalleft'" == "" {
-				local values `values' (scatter arcmid layer2  if val >= `valcondition' & marker==1, msymbol(none) mlabel(`flowval') mlabsize(`valsize') mlabpos(3) mlabgap(`valgap') mlabcolor(`labcolor')) ///
-			
+				local values `values' (scatter arcmid layer2  if val >= `valcondition' & marker==1, msymbol(none) mlabel(`flowval') mlabsize(`valsize') mlabpos(3) mlabgap(`valgap') mlabcolor(`labcolor')) 
 			}
 			
 			if  "`novalright'" == "" {
-				local values `values' (scatter arcmid layer2  if val >= `valcondition' & marker==2, msymbol(none) mlabel(`flowval') mlabsize(`valsize') mlabpos(9) mlabgap(`valgap') mlabcolor(`labcolor')) ///
-			
+				local values `values' (scatter arcmid layer2  if val >= `valcondition' & marker==2, msymbol(none) mlabel(`flowval') mlabsize(`valsize') mlabpos(9) mlabgap(`valgap') mlabcolor(`labcolor')) 
 			}
 		}
 		else {
@@ -834,16 +899,13 @@ preserve
 				local valw = r(mean)
 			
 				if  "`novalleft'" == "" {
-					local values `values' (scatter arcmid layer2 if val >= `valcondition' & id==`x' & marker==1, msymbol(none) mlabel(val) mlabsize(`valw') mlabpos(3) mlabgap(`valgap') mlabcolor(`labcolor')) ///
-				
+					local values `values' (scatter arcmid layer2 if val >= `valcondition' & id==`x' & marker==1, msymbol(none) mlabel(val) mlabsize(`valw') mlabpos(3) mlabgap(`valgap') mlabcolor(`labcolor')) 
 				}
 			
 				if  "`novalright'" == "" {
-					local values `values' (scatter arcmid layer2 if val >= `valcondition' & id==`x' & marker==2, msymbol(none) mlabel(val) mlabsize(`valw') mlabpos(9) mlabgap(`valgap') mlabcolor(`labcolor')) ///
-				
+					local values `values' (scatter arcmid layer2 if val >= `valcondition' & id==`x' & marker==2, msymbol(none) mlabel(val) mlabsize(`valw') mlabpos(9) mlabgap(`valgap') mlabcolor(`labcolor')) 
 				}
 			}
-			
 		}		
 	}
 	
@@ -863,7 +925,6 @@ preserve
 		
 		local clabs `"`ctitles'"'
 		local len : word count `clabs'
-
 
 		gen title_x 	= .
 		gen title_y 	= `cty' in 1/`len'
@@ -891,7 +952,6 @@ preserve
 	
 	// offset	
 	
-
 	summ layer2, meanonly
 	local xrmin = r(min)
 	local xrmax = r(max) + ((r(max) - r(min)) * `offset' / 100)

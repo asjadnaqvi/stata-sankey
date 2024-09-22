@@ -1,21 +1,21 @@
 {smcl}
-{* 11Jun2024}{...}
+{* 22Sep2024}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.74 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.8 (GitHub)}}
 
 {hline}
 
 {title:sankey}: A Stata package for Sankey diagrams.
 
 {marker syntax}{title:Syntax}
-{p 8 15 2}
 
+{p 8 15 2}
 {cmd:sankey} {it:value} {ifin}, {cmdab:f:rom}({it:var}) {cmdab:t:o}({it:var}) 
             {cmd:[} {cmd:by}({it:var}) {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:colorvar}({it:var}) {cmd:stock} {cmd:colorvarmiss}({it:str}) {cmd:colorboxmiss}({it:str})
               {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) {cmdab:ctitle:s}({it:list}) {cmdab:ctg:ap}({it:num}) {cmdab:cts:ize}({it:num}) {cmdab:ctpos:ition}({it:bot}|{it:top}) 
               {cmdab:ctc:olor}({it:str}) {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al} {cmd:labprop} {cmd:labscale}({it:num}) 
               {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:num}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues} {cmd:valprop} {cmd:valscale}({it:num})
-              {cmdab:novalr:ight} {cmdab:novall:eft} {cmdab:nolab:els} {cmd:sort1}({it:value}| {it:name}[{it:, reverse}]) {cmd:sort2}({it:value}| {it:order}[{it:, reverse}])
+              {cmdab:novalr:ight} {cmdab:novall:eft} {cmdab:nolab:els} {cmd:sort1}({it:value}|{it:name}[{it:, reverse}]) {cmd:sort2}({it:value}|{it:order}[{it:, reverse}]) {cmd:align} {cmd:fill} 
               {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmdab:boxw:idth}({it:str}) {cmd:percent} {cmd:wrap}({it:num}) *
             {cmd:]}
 
@@ -27,7 +27,7 @@ Please report errors/bugs/enhancement requests on {browse "https://github.com/as
 {synopthdr}
 {synoptline}
 
-{p2coldent : {opt sankey numvar, from() to()}}The command plots a numeric {it:numvar} variable that is defined by source {opt from()} and destination {opt to()}
+{p2coldent : {opt sankey numvar}, from() to()}The command plots a numeric {it:numvar} variable that is defined by source {opt from()} and destination {opt to()}
 across {opt by()} levels. Both {opt from()} and {opt to()} should be string variables. If they are not, then they are converted to strings. This is to ensure that 
 mapping across {opt by()} levels remains consistent.{p_end}
 
@@ -45,7 +45,12 @@ The {opt sort2(value)} arranges the links numerically, while {opt sort2(order)} 
 since it avoids links unnecessarily crossing each other.{p_end}
 
 {p2coldent : {opt stock}}This is an advanced option that collapses own flows (source = destination) as stocks. Own flows are no longer shown as links but add to the stocks
-that is reflected by the height of the boxes. This option can be useful if own flows are not be be considered as leakages from one layer to another.{p_end}
+that is reflected by the height of the boxes. This option can be useful if own flows are not to be considered as leakages from one layer to another.{p_end}
+
+{p2coldent : {opt fill}}If a node ends in the middle of the layers, then {opt fill} generates the missing values to complete the layers.{p_end}
+
+{p2coldent : {opt align}}If there are single parent-child relationships, this option will align the flows to the parent's horizontal orientiation rather than 
+compact aligning that can cause the flows to bunch together in the center. Do not use this option with more complex relationships.{p_end}
 
 {p2coldent : {opt colorby(option)}}Users can color the diagram by {ul:layer} instead of the default where each unique name is taken as a unique color category.
 The {it:layer} option is determined by the {opt by()} variable, and it will give each layer a unique color. Alternatively, use the {opt colorvar()} option below.{p_end}
@@ -58,8 +63,8 @@ can be specified.{p_end}
 
 {p2coldent : {opt colorboxmiss(str)}}Define the colors of the boxes of the missing categories not defined in {opt colorvar()}. Default is {opt colorboxmiss(gs10)}.{p_end}
 
-{p2coldent : {opt smooth(num)}}This option allows users to smooth out the spider plots connections. It can take on values between 1 to 8, where 1 is for straight lines, while 
-is 8 shows steps. The middle range between 3-6 gives more curvy links. The default value is {opt smooth(4)}.{p_end}
+{p2coldent : {opt smooth(num)}}This option allows users to smooth out the spider plots connections. It can take on values between 1 to 8, where 1 is straight lines while 
+8 shows steps. The middle range between 3-6 gives smoothed-out S-shaped links. The default value is {opt smooth(4)}.{p_end}
 
 {p2coldent : {opt gap(num)}}Gap between categories is defined as a percentage of the highest y-axis range across the layers. Default value is {opt gap(2)} for 2%.{p_end}
 
@@ -81,7 +86,7 @@ Use cautiously.{p_end}
 
 {p2coldent : {opt labs:ize(str)}}The size of the bar labels. Default is {opt labs(2)}.{p_end}
 
-{p2coldent : {opt wrap(num)}}Wrap the labels after a number of characters. For example, {opt wrap(50)} will do a line break every 50 characters.{p_end}
+{p2coldent : {opt wrap(num)}}Wrap the labels after a number of characters. For example, {opt wrap(20)} will do a line break every 20 characters.{p_end}
 
 {p2coldent : {opt labprop}}Scale the bar labels based on the relative stocks.{p_end}
 
@@ -146,6 +151,8 @@ names as {opt ctitle("My name1" "My name2" "My name3" "...")}. Please make sure 
 {p2coldent : {opt offset(num)}}The value, in percentage of x-axis width, to extend the x-axis on the right-hand side. Default is {opt offset(0)}.
 This option is highly useful especially if labels are rotated with custom positions.{p_end}
 
+{p2coldent : {opt n(num)}}Advanced option. The number of points for generating the link curves. Default is {opt n(30)}.{p_end}
+
 {p2coldent : {opt *}}All other standard twoway options.{p_end}
 
 {synoptline}
@@ -159,8 +166,6 @@ The {browse "http://repec.sowi.unibe.ch/stata/palettes/index.html":palette} pack
 {stata ssc install palettes, replace}
 {stata ssc install colrspace, replace}
 
-Even if you have these installed, it is highly recommended to regularly check for updates.
-
 
 {title:Examples}
 
@@ -169,11 +174,10 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {hline}
 
-
 {title:Package details}
 
-Version      : {bf:sankey} v1.74
-This release : 11 Jun 2024
+Version      : {bf:sankey} v1.8
+This release : 22 Sep 2024
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
@@ -193,14 +197,14 @@ Please submit bugs, errors, feature requests on {browse "https://github.com/asja
 
 Suggested citation guidlines for this package:
 
-Naqvi, A. (2024). Stata package "sankey" version 1.73. Release date 18 March 2024. https://github.com/asjadnaqvi/stata-sankey.
+Naqvi, A. (2024). Stata package "sankey" version 1.8. Release date 22 September 2024. https://github.com/asjadnaqvi/stata-sankey.
 
 @software{sankey,
    author = {Naqvi, Asjad},
    title = {Stata package ``sankey''},
    url = {https://github.com/asjadnaqvi/stata-sankey},
-   version = {1.74},
-   date = {2024-06-11}
+   version = {1.8},
+   date = {2024-09-22}
 }
 
 
@@ -215,6 +219,7 @@ Naqvi, A. (2024). Stata package "sankey" version 1.73. Release date 18 March 202
 
 {psee}
     {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb joyplot}, 
-	{helpb marimekko}, {helpb polarspike}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb streamplot}, {helpb sunburst}, {helpb treecluster}, {helpb treemap}, {helpb waffle}
+	{helpb marimekko}, {helpb polarspike}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb splinefit}, {helpb streamplot}, {helpb sunburst}, {helpb ternary}, {helpb treecluster}, {helpb treemap}, {helpb trimap}, {helpb waffle}
+
 	
 or visit {browse "https://github.com/asjadnaqvi":GitHub} for detailed documentation and examples.	
