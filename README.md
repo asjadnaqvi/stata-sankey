@@ -1,11 +1,14 @@
 
-![sankey-1](https://github.com/asjadnaqvi/stata-sankey/assets/38498046/b019b070-64c5-4d92-abdd-7774e1cefea6)
 
 ![StataMin](https://img.shields.io/badge/stata-2015-blue) ![issues](https://img.shields.io/github/issues/asjadnaqvi/stata-sankey) ![license](https://img.shields.io/github/license/asjadnaqvi/stata-sankey) ![Stars](https://img.shields.io/github/stars/asjadnaqvi/stata-sankey) ![version](https://img.shields.io/github/v/release/asjadnaqvi/stata-sankey) ![release](https://img.shields.io/github/release-date/asjadnaqvi/stata-sankey)
 
+[Installation](#Installation) | [Syntax](#Syntax) | [Citation guidelines](#Citation-guidelines) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
+
 ---
 
-[Installation](#Installation) | [Syntax](#Syntax) | [Citation guidelines](#Citation-guidelines) | [Examples](#Examples) | [Feedback](#Feedback) | [Change log](#Change-log)
+
+![sankey-1](https://github.com/asjadnaqvi/stata-sankey/assets/38498046/b019b070-64c5-4d92-abdd-7774e1cefea6)
+
 
 ---
 
