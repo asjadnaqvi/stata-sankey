@@ -12,7 +12,7 @@
 
 ---
 
-# sankey v1.8
+# sankey v1.81
 (22 Sep 2024)
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
@@ -28,7 +28,7 @@ SSC (**v1.74**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.8**):
+GitHub (**v1.81**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -41,6 +41,7 @@ The `palettes` package is required to run this command:
 ```
 ssc install palettes, replace
 ssc install colrspace, replace
+ssc install graphfunctions, replace
 ```
 
 Even if you have these packages installed, please check for updates: `ado update, update`.
@@ -66,11 +67,14 @@ graph set window fontface "Arial Narrow"
 The syntax for the latest version is as follows:
 
 ```stata
-sankey value [if] [in], from(var) to(var) [ by(var) palette(str) colorby(layer|level) colorvar(var) stock colorvarmiss(str) colorboxmiss(str) smooth(1-8) gap(num) 
-        recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num) ctposition(bot|top)
-        ctcolor(str) labangle(str) labsize(str) labposition(str) labgap(str) showtotal labprop labscale(num) valsize(str) valcondition(num) format(str) valgap(str) 
-		novalues valprop valscale(num) novalright novalleft nolabels 
-		sort1(value|name[, reverse]) sort2(value|order[, reverse]) align fill lwidth(str) lcolor(str) alpha(num) offset(num) boxwidth(str) percent wrap(num) * ]
+sankey value [if] [in] [weight], from(var) to(var) 
+            [ by(var) palette(str) colorby(layer|level) colorvar(var) stock stock2 colorvarmiss(str) colorboxmiss(str)
+              smooth(1-8) gap(num) recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num) ctposition(bot|top) 
+              ctcolor(str) labangle(str) labsize(str) labposition(str) labgap(str) showtotal labprop labscale(num) 
+              valsize(str) valcondition(num) format(str) valgap(str) novalues valprop valscale(num)
+              novalright novalleft nolabels sort1(value|name[, reverse]) sort2(value|order[, reverse]) align fill 
+              lwidth(str) lcolor(str) alpha(num) offset(num) boxwidth(str) percent wrap(num) * ]
+
 ```
 
 See the help file `help sankey` for details.
@@ -95,15 +99,15 @@ Software packages take countless hours of programming, testing, and bug fixing. 
    author = {Naqvi, Asjad},
    title = {Stata package ``sankey''},
    url = {https://github.com/asjadnaqvi/stata-sankey},
-   version = {1.8},
-   date = {2024-09-22}
+   version = {1.81},
+   date = {2024-10-16}
 }
 ```
 
 *or simple text*
 
 ```
-Naqvi, A. (2024). Stata package "sankey" version 1.8. Release date 22 September 2024. https://github.com/asjadnaqvi/stata-sankey.
+Naqvi, A. (2024). Stata package "sankey" version 1.81. Release date 16 October 2024. https://github.com/asjadnaqvi/stata-sankey.
 ```
 
 
@@ -114,14 +118,14 @@ Naqvi, A. (2024). Stata package "sankey" version 1.8. Release date 22 September 
 
 Get the example data from GitHub:
 
-```
+```stata
 import excel using "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sankey_example2.xlsx?raw=true", clear first
 ```
 
 Let's test the `sankey` command:
 
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer)
 ```
 
@@ -423,12 +427,6 @@ sankey value, from(source) to(destination) by(layer) labprop labs(2)
 <img src="/figures/sankey9_2.png" width="100%">
 
 
-### stocks (v1.6)
-
-```
-sankey value, from(source) to(destination) by(layer) stock
-```
-
 <img src="/figures/sankey10.png" width="100%">
 
 
@@ -442,7 +440,23 @@ sankey value, from(source) to(destination) by(layer) palette(CET C6) alpha(60) /
 	xsize(2) ysize(1)
 ```
 
-<img src="/figures/sankey7.png" height="400">
+<img src="/figures/sankey7.png" width="100%">
+
+
+### stocks (v1.6+)
+
+```stata
+import excel using "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sankey_stocks.xlsx?raw=true", clear first
+```
+
+```
+sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1)
+sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) stock
+sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) stock2
+```
+
+
+
 
 ## Feedback
 
@@ -450,6 +464,12 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+**v1.81 (16 Oct 2024)**
+- Weights are now allowed. It is still advisable to prepare the data beforehand.
+- `wrap()` now requires [graphfunctions](https://github.com/asjadnaqvi/stata-graphfunctions) for label wrapping the respects word boundaries.
+- Option `stock2` added that collapses stocks on the right (incoming) and removes own flows. In contrast, `stock` collapses stocks on the left (out-going).
+- Various code fixes should remove additional small bugs.
 
 **v1.8 (22 Sep 2024)**
 - Added option `align` to align flows. Works only if there is just one parent (still beta).

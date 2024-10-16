@@ -3,6 +3,6 @@ authors:
 - family-names: "Naqvi"
   given-names: "Asjad"
 title: "Stata package ``sankey''"
-version: 1.8
-date-released: 2024-09-22
+version: 1.81
+date-released: 2024-10-16
 url: "https://github.com/asjadnaqvi/stata-sankey"

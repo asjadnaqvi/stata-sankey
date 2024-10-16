@@ -1,7 +1,7 @@
 {smcl}
-{* 22Sep2024}{...}
+{* 16Oct2024}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.8 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.81 (GitHub)}}
 
 {hline}
 
@@ -10,14 +10,14 @@
 {marker syntax}{title:Syntax}
 
 {p 8 15 2}
-{cmd:sankey} {it:value} {ifin}, {cmdab:f:rom}({it:var}) {cmdab:t:o}({it:var}) 
-            {cmd:[} {cmd:by}({it:var}) {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:colorvar}({it:var}) {cmd:stock} {cmd:colorvarmiss}({it:str}) {cmd:colorboxmiss}({it:str})
+
+{cmd:sankey} {it:value} {ifin} {weight}, {cmdab:f:rom}({it:var}) {cmdab:t:o}({it:var}) 
+            {cmd:[} {cmd:by}({it:var}) {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:colorvar}({it:var}) {cmd:stock} {cmd:stock2} {cmd:colorvarmiss}({it:str}) {cmd:colorboxmiss}({it:str})
               {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) {cmdab:ctitle:s}({it:list}) {cmdab:ctg:ap}({it:num}) {cmdab:cts:ize}({it:num}) {cmdab:ctpos:ition}({it:bot}|{it:top}) 
               {cmdab:ctc:olor}({it:str}) {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al} {cmd:labprop} {cmd:labscale}({it:num}) 
               {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:num}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues} {cmd:valprop} {cmd:valscale}({it:num})
               {cmdab:novalr:ight} {cmdab:novall:eft} {cmdab:nolab:els} {cmd:sort1}({it:value}|{it:name}[{it:, reverse}]) {cmd:sort2}({it:value}|{it:order}[{it:, reverse}]) {cmd:align} {cmd:fill} 
-              {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmdab:boxw:idth}({it:str}) {cmd:percent} {cmd:wrap}({it:num}) *
-            {cmd:]}
+              {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmdab:boxw:idth}({it:str}) {cmd:percent} {cmd:wrap}({it:num}) * {cmd:]}
 
 {p 4 4 2}
 Please report errors/bugs/enhancement requests on {browse "https://github.com/asjadnaqvi/stata-sankey/issues":GitHub}. 
@@ -44,8 +44,9 @@ The command can be combined with reverse, e.g. {opt sort1(value, reverse)} or {o
 The {opt sort2(value)} arranges the links numerically, while {opt sort2(order)} arranges them in the order they originate. The latter is also aesthetically more pleasing
 since it avoids links unnecessarily crossing each other.{p_end}
 
-{p2coldent : {opt stock}}This is an advanced option that collapses own flows (source = destination) as stocks. Own flows are no longer shown as links but add to the stocks
-that is reflected by the height of the boxes. This option can be useful if own flows are not to be considered as leakages from one layer to another.{p_end}
+{p2coldent : {opt stock}}Own flows (source = destination) are shown as stocks on the left (out-going layer) and links are removed.{p_end}
+
+{p2coldent : {opt stock2}}Own flows (source = destination) are shown as stocks on the right (incoming layer) and links are removed.{p_end}
 
 {p2coldent : {opt fill}}If a node ends in the middle of the layers, then {opt fill} generates the missing values to complete the layers.{p_end}
 
@@ -176,8 +177,8 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.8
-This release : 22 Sep 2024
+Version      : {bf:sankey} v1.81
+This release : 16 Oct 2024
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
@@ -195,16 +196,16 @@ Please submit bugs, errors, feature requests on {browse "https://github.com/asja
 
 {title:Citation guidelines}
 
-Suggested citation guidlines for this package:
+Suggested citation for this package:
 
-Naqvi, A. (2024). Stata package "sankey" version 1.8. Release date 22 September 2024. https://github.com/asjadnaqvi/stata-sankey.
+Naqvi, A. (2024). Stata package "sankey" version 1.81. Release date 16 October 2024. https://github.com/asjadnaqvi/stata-sankey.
 
 @software{sankey,
    author = {Naqvi, Asjad},
    title = {Stata package ``sankey''},
    url = {https://github.com/asjadnaqvi/stata-sankey},
-   version = {1.8},
-   date = {2024-09-22}
+   version = {1.81},
+   date = {2024-10-16}
 }
 
 
@@ -218,8 +219,7 @@ Naqvi, A. (2024). Stata package "sankey" version 1.8. Release date 22 September 
 {title:Other visualization packages}
 
 {psee}
-    {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb joyplot}, 
+    {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb graphfunctions}, {helpb joyplot}, 
 	{helpb marimekko}, {helpb polarspike}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb splinefit}, {helpb streamplot}, {helpb sunburst}, {helpb ternary}, {helpb treecluster}, {helpb treemap}, {helpb trimap}, {helpb waffle}
 
-	
-or visit {browse "https://github.com/asjadnaqvi":GitHub} for detailed documentation and examples.	
+or visit {browse "https://github.com/asjadnaqvi":GitHub}.
