@@ -454,7 +454,9 @@ sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1)
 sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) stock
 sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) stock2
 ```
-
+<img src="/figures/sankey_stock1.png" width="100%">
+<img src="/figures/sankey_stock2.png" width="100%">
+<img src="/figures/sankey_stock3.png" width="100%">
 
 
 
