@@ -450,9 +450,9 @@ import excel using "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sa
 ```
 
 ```
-sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1)
-sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) stock
-sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) stock2
+sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) showtotal 
+sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) showtotal stock
+sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) showtotal stock2
 ```
 <img src="/figures/sankey_stock1.png" width="100%">
 <img src="/figures/sankey_stock2.png" width="100%">
