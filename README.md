@@ -440,7 +440,7 @@ sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) showtotal
 <img src="/figures/sankey_stock3.png" width="100%">
 
 
-### stocks (v1.9)
+### v1.9
 
 Load trade data by regions:
 
