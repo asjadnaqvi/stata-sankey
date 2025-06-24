@@ -488,7 +488,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 - Option `ctwrap()` added to wrap title labels.
 - Option `ctgap()` now takes on values based on percentage of total height. This makes it easier to relatively displace the title labels.
 - Option `labpos()` now accepts lists of positions for each layer.
-- X-axis was sometimes adding additional space due to internal tolerance for ranges. This has been fixed.
+- X-axis was sometimes adding additional space due to some internal tolerance limit. This has been fixed.
 - Minor bug fixes.
 
 **v1.81 (16 Oct 2024)**
