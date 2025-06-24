@@ -445,7 +445,7 @@ sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) showtotal
 Load trade data by regions:
 
 ```stata
-use "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/trade_sankey_example.dta?raw=true", clear first
+use "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/trade_sankey_example.dta?raw=true", clear
 ```
 
 Generate the default Sankey: 
@@ -458,7 +458,7 @@ sankey value, from(ex_region) to(im_region)
 <img src="/figures/sankey10_1.png" width="100%">
 
 
-add better styling using the new options in v1.9:
+Add better styling using the new options in v1.9:
 
 
 ```stata
