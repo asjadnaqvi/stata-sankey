@@ -12,8 +12,8 @@
 
 ---
 
-# sankey v1.81
-(22 Sep 2024)
+# sankey v1.9
+(24 Jun 2025)
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
@@ -28,7 +28,7 @@ SSC (**v1.81**):
 ssc install sankey, replace
 ```
 
-GitHub (**v1.81**):
+GitHub (**v1.9**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -70,11 +70,10 @@ The syntax for the latest version is as follows:
 sankey value [if] [in] [weight], from(var) to(var) 
             [ by(var) palette(str) colorby(layer|level) colorvar(var) stock stock2 colorvarmiss(str) colorboxmiss(str)
               smooth(1-8) gap(num) recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num) ctposition(bot|top) 
-              ctcolor(str) labangle(str) labsize(str) labposition(str) labgap(str) showtotal labprop labscale(num) 
+              ctcolor(str) ctwrap(num) labangle(str) labsize(str) labposition(str) labgap(str) showtotal labprop labscale(num) 
               valsize(str) valcondition(num) format(str) valgap(str) novalues valprop valscale(num)
               novalright novalleft nolabels sort1(value|name[, reverse]) sort2(value|order[, reverse]) align fill 
               lwidth(str) lcolor(str) alpha(num) offset(num) boxwidth(str) percent wrap(num) * ]
-
 ```
 
 See the help file `help sankey` for details.
@@ -89,29 +88,11 @@ where `var1` and `var2` are source and destination variables respectively agains
 
 
 ## Citation guidelines
-Software packages take countless hours of programming, testing, and bug fixing. If you use this package, then a citation would be highly appreciated. Suggested citations:
 
+Software packages take countless hours of programming, testing, and bug fixing. If you use this package, then a citation would be highly appreciated. 
 
-*in BibTeX*
+The [SSC citation](https://ideas.repec.org/c/boc/bocode/s459154.html) is recommended. Please note that the GitHub version might be newer than the SSC version.
 
-```
-@software{sankey,
-   author = {Naqvi, Asjad},
-   title = {Stata package ``sankey''},
-   url = {https://github.com/asjadnaqvi/stata-sankey},
-   version = {1.81},
-   date = {2024-10-16}
-}
-```
-
-*or simple text*
-
-```
-Naqvi, A. (2024). Stata package "sankey" version 1.81. Release date 16 October 2024. https://github.com/asjadnaqvi/stata-sankey.
-```
-
-
-*or see [SSC citation](https://ideas.repec.org/c/boc/bocode/s459154.html) (updated once a new version is submitted)*
 
 
 ## Examples
@@ -459,6 +440,41 @@ sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) showtotal
 <img src="/figures/sankey_stock3.png" width="100%">
 
 
+### stocks (v1.9)
+
+Load trade data by regions:
+
+```stata
+use "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/trade_sankey_example.dta?raw=true", clear first
+```
+
+Generate the default Sankey: 
+
+
+```stata
+sankey value, from(ex_region) to(im_region)  
+```
+
+<img src="/figures/sankey10_1.png" width="100%">
+
+
+add better styling using the new options in v1.9:
+
+
+```stata
+sankey value, from(ex_region) to(im_region)    ///
+	format(%15.1fc) labprop smooth(8) palette(HCL intense) sort1(value) sort2(value)	///
+	labs(2.4)  laba(0) labpos(9 3) labg(2) gap(5) noval showtot lw(none) ///
+	title("{fontface Merriweather Bold:Global trade in 2022 (USD millions)}", size(4)) ///
+	note("Source: COMTRADE BACI HS07 2022.", size(2)) ///
+	plotregion(margin(l+16 r+16 b+5)) ///
+	ctitle("{bf:Exporting region}" "{bf:Importing region}") ctwrap(8) ctgap(5) ///
+	xsize(2) ysize(1)
+```
+
+
+<img src="/figures/sankey10_2.png" width="100%">
+
 
 ## Feedback
 
@@ -466,6 +482,14 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 
 ## Change log
+
+
+**v1.9 (24 Jun 2025)**
+- Option `ctwrap()` added to wrap title labels.
+- Option `ctgap()` now takes on values based on percentage of total height. This makes it easier to relatively displace the title labels.
+- Option `labpos()` now accepts lists of positions for each layer.
+- X-axis was sometimes adding additional space due to internal tolerance for ranges. This has been fixed.
+- Minor bug fixes.
 
 **v1.81 (16 Oct 2024)**
 - Weights are now allowed. It is still advisable to prepare the data beforehand.

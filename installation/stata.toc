@@ -1,7 +1,7 @@
-v 1.8
+v 1.9
 d 'SANKEY': A Stata package for Sankey plots
 d
-d Distribution-Date: 20240922
+d Distribution-Date: 20250624
 d
 d Asjad Naqvi
 d asjadnaqvi@gmail.com

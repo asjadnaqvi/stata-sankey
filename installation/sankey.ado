@@ -1,6 +1,7 @@
-*! sankey v1.81 (16 Oct 2024)
+*! sankey v1.9 (25 Jun 2025)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+*v1.9  (25 Jun 2025): ctwrap() added. ctgap() is now based on precentage of maximum height. better tolerance of x-axis range. labpos() now accepts lists for fine tuning layers.
 *v1.81 (16 Oct 2024): wrap() improved. stock2 added to stock on the right. weights are allowed.
 *v1.8  (21 Sep 2024): added align, fill, wrap(), n(). Major code cleanup
 *v1.74 (10 Jun 2024): added wrap() option.
@@ -43,8 +44,8 @@ version 15
 		[ valprop labprop valscale(real 0.33333) labscale(real 0.33333) NOVALRight NOVALLeft NOLABels ]      ///  // v1.5
 		[ sort1(string) sort2(string)  ]  /// // v1.6
 		[ percent ctpos(string) CTColor(string) * ]    /// // v1.7 
-		[ align fill wrap(numlist >=0 max=1) n(real 30) stock stock2  ]	//	v1.8
-
+		[ align fill wrap(numlist >=0 max=1) n(real 30) stock stock2 ctwrap(numlist >=0 max=1) ] ///	//	v1.8
+		[  ]  // v1.9
 		
 
 	// check dependencies
@@ -291,7 +292,7 @@ preserve
 		}
 		
 		
-		sort _sort0 layer var1 var2  val1
+		sort _sort0 layer var1 var2 val1
 		
 		// children
 		forval k = 1/`last' {
@@ -316,10 +317,15 @@ preserve
 		
 	}
 
+	
+	
+	
 	*** reshape
 
 	gen id = _n
-	reshape long var val , i(id layer xcut _sort*) j(marker)
+	reshape long var val , i(id layer xcut) j(marker)  // take out _sort*
+	
+	capture drop _sort*
 	
 	// variable type check
 	
@@ -364,7 +370,11 @@ preserve
 		recode val_in val_out (.=0)
 		egen double height = rowmax(val_in val_out) // this is the maximum height for each category for each group.
 
-
+		summ height, meanonly
+		local maxheight = r(max)
+		
+		
+	
 	
 	// sort by name or value
 
@@ -431,9 +441,11 @@ preserve
 	drop temp
 	
 	
-	************************************
-	**** generate the spikes   ***
-	************************************
+	
+	
+	*****************************
+	**** generate the boxes   ***
+	*****************************
 
 	egen tag = tag(layer2 height order)
 	sort layer2 tag order
@@ -459,6 +471,9 @@ preserve
 	cap drop heightsum
 
 
+	
+	
+	
 	*************************
 	** generate the links  **
 	*************************
@@ -587,7 +602,9 @@ preserve
 		replace stack_start = stack_start + `displace' if layer2==`x'		
 	}
 	
-
+	
+	
+	
 	// update the value of starting layer to total
 
 	
@@ -679,7 +696,7 @@ preserve
 	if "`colorvarmiss'" == "" local colorvarmiss gs12
 	if "`labangle'" 	== "" local labangle 90
 	if "`labsize'"  	== "" local labsize 2	
-	if "`labposition'"  == "" local labposition 0	
+	
 	if "`labgap'" 		== "" local labgap 0
 	if "`valsize'"  	== "" local valsize 1.5
 	if "`valgap'" 	 	== "" local valgap 2
@@ -694,6 +711,16 @@ preserve
 			local format "%12.0f"
 		}
 	}
+	
+	if "`labposition'"  == "" local labposition 0	
+	
+	if "`labposition'" != "" {
+		local lplen : word count `labposition'
+		di "positions = `lplen'"
+	}
+
+		
+	
 	
 	format val `format'	
 	
@@ -832,12 +859,32 @@ preserve
 			foreach x of local lvls {
 				summ labwgt if `_lablyr'==`x' & tag_spike==1 & ymid!=., meanonly
 				local labw = r(max)
+			
 				
-				local boxlabel `boxlabel' (scatter ymid layer2 if tag_spike==1 & `_lablyr'==`x' & height > `valcondition',  msymbol(none) mlabel(lab2) mlabsize(`labw') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) 
+				if `lplen' == 1 {
+					local boxlabel `boxlabel' (scatter ymid layer2 if tag_spike==1 & `_lablyr'==`x' & height > `valcondition',  msymbol(none) mlabel(lab2) mlabsize(`labw') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) 
+				}
+				else {
+					levelsof layer2 if tag_spike==1, local(pos)
+					foreach y of local pos {
+						local _labpos : word `=`y'+1' of `labposition'
+						local boxlabel `boxlabel' (scatter ymid layer2 if tag_spike==1  & height > `valcondition' & layer2==`y' & `_lablyr'==`x',  msymbol(none) mlabel(lab2) mlabsize(`labw') mlabpos(`_labpos') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) 
+					}
+				}
 			}
 		}
-		else {
-			local boxlabel (scatter ymid layer2 if tag_spike==1  & height > `valcondition',  msymbol(none) mlabel(lab2) mlabsize(`labsize') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) 
+		else {  // no labprop
+			if `lplen' == 1 {
+				local boxlabel (scatter ymid layer2 if tag_spike==1  & height > `valcondition',  msymbol(none) mlabel(lab2) mlabsize(`labsize') mlabpos(`labposition') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) 
+			}
+			else {
+				levelsof layer2 if tag_spike==1, local(lvls)
+				foreach x of local lvls {
+						
+						local _labpos : word `=`x'+1' of `labposition'
+						local boxlabel `boxlabel' (scatter ymid layer2 if tag_spike==1  & height > `valcondition' & layer2==`x',  msymbol(none) mlabel(lab2) mlabsize(`labsize') mlabpos(`_labpos') mlabgap(`labgap') mlabangle(`labangle') mlabcolor(`labcolor')) 
+				}
+			}
 		}	
 	}	
 
@@ -896,12 +943,13 @@ preserve
 	if `"`ctitles'"' != "" {
 		
 		if "`ctpos'" == "bot" | "`ctpos'" == "" {
-			local cty = -5 - `ctgap'
+			summ y2, meanonly
+			local cty = -1 * (`r(max)' * (`ctgap' / 100))
 		}
 		
 		if "`ctpos'" == "top" {
 			summ y2, meanonly
-			local cty = `r(max)' + `ctgap'
+			local cty = `r(max)' * (`ctgap' / 100)
 		}
 		
 		local clabs `"`ctitles'"'
@@ -918,6 +966,14 @@ preserve
 			local aa : word `i' of `clabs'
 			replace title_name =  `"`:word `i' of `clabs''"' in `i'
 		}
+		
+		
+		if "`ctwrap'" != "" {
+			ren title_name title_name_temp
+			labsplit title_name_temp, wrap(`ctwrap') gen(title_name)
+			drop title_name_temp
+		}	
+		
 	}	
 	
 	**** column labels 
@@ -948,7 +1004,7 @@ preserve
 		`lvllab'   	///
 			, 		///
 				legend(off) 										 ///
-					xlabel(, nogrid) ylabel(0 `yrange' , nogrid)     ///
+					xlabel(minmax, nogrid) ylabel(0 `yrange' , nogrid)     ///
 					xscale(off range(`xrmin' `xrmax')) yscale(off)	 ///
 					`options'
 		

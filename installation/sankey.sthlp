@@ -1,7 +1,7 @@
 {smcl}
-{* 16Oct2024}{...}
+{* 24Jun2024}{...}
 {hi:help sankey}{...}
-{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.81 (GitHub)}}
+{right:{browse "https://github.com/asjadnaqvi/stata-sankey":sankey v1.9 (GitHub)}}
 
 {hline}
 
@@ -14,7 +14,7 @@
 {cmd:sankey} {it:value} {ifin} {weight}, {cmdab:f:rom}({it:var}) {cmdab:t:o}({it:var}) 
             {cmd:[} {cmd:by}({it:var}) {cmd:palette}({it:str}) {cmd:colorby}({it:layer}|{it:level}) {cmd:colorvar}({it:var}) {cmd:stock} {cmd:stock2} {cmd:colorvarmiss}({it:str}) {cmd:colorboxmiss}({it:str})
               {cmd:smooth}({it:1-8}) {cmd:gap}({it:num}) {cmdab:recen:ter}({it:mid}|{it:bot}|{it:top}) {cmdab:ctitle:s}({it:list}) {cmdab:ctg:ap}({it:num}) {cmdab:cts:ize}({it:num}) {cmdab:ctpos:ition}({it:bot}|{it:top}) 
-              {cmdab:ctc:olor}({it:str}) {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al} {cmd:labprop} {cmd:labscale}({it:num}) 
+              {cmdab:ctc:olor}({it:str}) {cmdab:ctwrap}({it:num}) {cmdab:laba:ngle}({it:str}) {cmdab:labs:ize}({it:str}) {cmdab:labpos:ition}({it:str}) {cmdab:labg:ap}({it:str}) {cmdab:showtot:al} {cmd:labprop} {cmd:labscale}({it:num}) 
               {cmdab:vals:ize}({it:str}) {cmdab:valcond:ition}({it:num}) {cmd:format}({it:str}) {cmdab:valg:ap}({it:str}) {cmdab:noval:ues} {cmd:valprop} {cmd:valscale}({it:num})
               {cmdab:novalr:ight} {cmdab:novall:eft} {cmdab:nolab:els} {cmd:sort1}({it:value}|{it:name}[{it:, reverse}]) {cmd:sort2}({it:value}|{it:order}[{it:, reverse}]) {cmd:align} {cmd:fill} 
               {cmdab:lw:idth}({it:str}) {cmdab:lc:olor}({it:str}) {cmd:alpha}({it:num}) {cmd:offset}({it:num}) {cmdab:boxw:idth}({it:str}) {cmd:percent} {cmd:wrap}({it:num}) * {cmd:]}
@@ -87,12 +87,12 @@ Use cautiously.{p_end}
 
 {p2coldent : {opt labs:ize(str)}}The size of the bar labels. Default is {opt labs(2)}.{p_end}
 
-{p2coldent : {opt wrap(num)}}Wrap the labels after a number of characters. For example, {opt wrap(20)} will do a line break every 20 characters.{p_end}
+{p2coldent : {opt wrap(num)}}Wrap the labels after a number of characters. For example, {opt wrap(10)} will do a line break every 10 characters.{p_end}
 
 {p2coldent : {opt labprop}}Scale the bar labels based on the relative stocks.{p_end}
 
-{p2coldent : {opt labscale(num)}}Scale factor of {opt labprop}. Default value is {opt labscale(0.3333)}. Values closer to zero result in more exponential scaling, while values closer
-to one are almost linear scaling. Advance option, use carefully.{p_end}
+{p2coldent : {opt labscale(num)}}Scale factor of {opt labprop}. Default value is {opt labscale(0.3333)}. Values closer to zero result in more exponential scaling,
+while values closer to one are almost linear scaling. Advance option, use carefully.{p_end}
 
 {p2coldent : {opt laba:ngle(str)}}The angle of the bar labels. Default is {opt laba(90)} for vertical labels.{p_end}
 
@@ -100,7 +100,9 @@ to one are almost linear scaling. Advance option, use carefully.{p_end}
 
 {p2coldent : {opt nolab:els}}Hide the bar labels.{p_end}
 
-{p2coldent : {opt labpos:ition(str)}}The position of the bar labels. Default is {opt labpos(0)} for centered.{p_end}
+{p2coldent : {opt labpos:ition(list)}}The position of the bar labels. Default is {opt labpos(0)} for centered labels.
+This option can also take on position lists for fine tuning the figures. E.g. if there is just one from-to layer, then
+{opt ctpos(9 3)} will show bar labels on the left and right.{p_end}
 
 {p2coldent : {opt labg:ap(str)}}The gap of the bars from the mid point. Default is {opt labg(0)} for no gap.
 If the label angle is change to horitzontal or the label position is changed from 0, then {opt labg()} can be used to fine-tune the placement.{p_end}
@@ -140,11 +142,13 @@ names as {opt ctitle("My name1" "My name2" "My name3" "...")}. Please make sure 
 
 {p2coldent : {opt cts:ize(num)}}The size of the column titles. Default is {opt cts(2.5)}.{p_end}
 
-{p2coldent : {opt ctg:ap(num)}}The gap of the column titles in pixels. Default is {opt ctg(0)}.{p_end}
+{p2coldent : {opt ctg:ap(num)}}The gap of the column titles in percentage of total height. Default is {opt ctg(0)}.{p_end}
 
 {p2coldent : {opt ctc:olor(str)}}The color of the column titles. Default is {opt ctc(black)}.{p_end}
 
 {p2coldent : {opt ctpos:ition(bot|top)}}The position of column titles. No option defaults to {opt ctpos(bot)}. Might still need adjustment via {opt ctgap()}.{p_end}
+
+{p2coldent : {opt ctwrap(num)}}Wrap the titles after a number of characters. For example, {opt ctwrap(10)} will do a line break every 10 characters.{p_end}
 
 
 {p 4 4 2}{ul:{it:Miscellaneous}}
@@ -177,8 +181,8 @@ See {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub} for examples.
 
 {title:Package details}
 
-Version      : {bf:sankey} v1.81
-This release : 16 Oct 2024
+Version      : {bf:sankey} v1.9
+This release : 24 Jun 2025
 First release: 08 Dec 2022
 Repository   : {browse "https://github.com/asjadnaqvi/stata-sankey":GitHub}
 Keywords     : Stata, graph, sankey
@@ -196,17 +200,8 @@ Please submit bugs, errors, feature requests on {browse "https://github.com/asja
 
 {title:Citation guidelines}
 
-Suggested citation for this package:
-
-Naqvi, A. (2024). Stata package "sankey" version 1.81. Release date 16 October 2024. https://github.com/asjadnaqvi/stata-sankey.
-
-@software{sankey,
-   author = {Naqvi, Asjad},
-   title = {Stata package ``sankey''},
-   url = {https://github.com/asjadnaqvi/stata-sankey},
-   version = {1.81},
-   date = {2024-10-16}
-}
+See {browse "https://ideas.repec.org/c/boc/bocode/s459154.html"} for the official SSC citation. 
+Please note that the GitHub version might be newer than the SSC version.
 
 
 {title:References}
@@ -219,7 +214,8 @@ Naqvi, A. (2024). Stata package "sankey" version 1.81. Release date 16 October 2
 {title:Other visualization packages}
 
 {psee}
-    {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb graphfunctions}, {helpb joyplot}, 
-	{helpb marimekko}, {helpb polarspike}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb splinefit}, {helpb streamplot}, {helpb sunburst}, {helpb ternary}, {helpb treecluster}, {helpb treemap}, {helpb trimap}, {helpb waffle}
+    {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb graphfunctions},
+	{helpb geoboundary}, {helpb geoflow}, {helpb joyplot}, {helpb marimekko}, {helpb polarspike}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb splinefit}, {helpb streamplot}, 
+	{helpb sunburst}, {helpb ternary}, {helpb tidytuesday}, {helpb treecluster}, {helpb treemap}, {helpb trimap}, {helpb waffle}
 
-or visit {browse "https://github.com/asjadnaqvi":GitHub}.
+Visit {browse "https://github.com/asjadnaqvi":GitHub} for further information.	
