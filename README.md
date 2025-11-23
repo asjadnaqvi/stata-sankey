@@ -21,7 +21,7 @@ This package allows users to draw Sankey plots in Stata. It is based on the [San
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-SSC (**v1.81**):
+SSC (**v1.9**):
 
 ```
 ssc install sankey, replace
