@@ -10,7 +10,6 @@
 ![sankey-1](https://github.com/asjadnaqvi/stata-sankey/assets/38498046/b019b070-64c5-4d92-abdd-7774e1cefea6)
 
 
----
 
 # sankey v1.9
 (24 Jun 2025)
