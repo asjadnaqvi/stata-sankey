@@ -21,7 +21,7 @@ This package allows users to draw Sankey plots in Stata. It is based on the [San
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-SSC (**v1.91**):
+SSC (**v1.9**):
 
 ```
 ssc install sankey, replace
@@ -29,15 +29,15 @@ ssc install sankey, replace
 
 GitHub (**v1.91**):
 
-```
+```stata
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
 ```
 
 
 
-The `palettes` package is required to run this command:
+The following dependencies are required:
 
-```
+```stata
 ssc install palettes, replace
 ssc install colrspace, replace
 ssc install graphfunctions, replace
@@ -47,7 +47,7 @@ Even if you have these packages installed, please check for updates: `ado update
 
 If you want to make a clean figure, then it is advisable to load a clean scheme. These are several available and I personally use the following:
 
-```
+```stata
 ssc install schemepack, replace
 set scheme white_tableau  
 ```
@@ -56,7 +56,7 @@ You can also push the scheme directly into the graph using the `scheme(schemenam
 
 I also prefer narrow fonts in figures with long labels. You can change this as follows:
 
-```
+```stata
 graph set window fontface "Arial Narrow"
 ```
 
@@ -79,7 +79,7 @@ See the help file `help sankey` for details.
 
 The most basic use is as follows:
 
-```
+```stata
 sankey value, from(var1) to(var2) [by(level)]
 ```
 
@@ -114,13 +114,13 @@ sankey value, from(source) to(destination) by(layer)
 
 ### Smooth 
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) smooth(2)
 ```
 
 <img src="/figures/sankey2_1.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) smooth(8)
 ```
 
@@ -129,14 +129,14 @@ sankey value, from(source) to(destination) by(layer) smooth(8)
 
 ### Re-center
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) recenter(bot)
 ```
 
 <img src="/figures/sankey3_1.png" width="100%">
 
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) recenter(top)
 ```
 
@@ -144,14 +144,14 @@ sankey value, from(source) to(destination) by(layer) recenter(top)
 
 ### Gaps
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) gap(0)
 ```
 
 <img src="/figures/sankey4_1.png" width="100%">
 
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) gap(20)
 ```
 
@@ -159,7 +159,7 @@ sankey value, from(source) to(destination) by(layer) gap(20)
 
 ### Values
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) noval showtot
 ```
 
@@ -168,43 +168,43 @@ sankey value, from(source) to(destination) by(layer) noval showtot
 
 ### Sort (v1.6)
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) sort1(name)
 ```
 
 <img src="/figures/sankey5_1.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) sort1(value)
 ```
 
 <img src="/figures/sankey5_2.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) sort1(value) sort2(value)
 ```
 
 <img src="/figures/sankey5_2_1.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(value)
 ```
 
 <img src="/figures/sankey5_2_2.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(value, reverse) 
 ```
 
 <img src="/figures/sankey5_2_3.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(order) 
 ```
 
 <img src="/figures/sankey5_2_4.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) sort1(name, reverse) sort2(order, reverse) 
 ```
 
@@ -247,7 +247,7 @@ sankey value, from(source2) to(destination2) by(layer)
 
 ### boxwidth
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) boxwid(5)
 ```
 
@@ -256,13 +256,13 @@ sankey value, from(source) to(destination) by(layer) boxwid(5)
 
 ### valcond
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) valcond(200)
 ```
 
 <img src="/figures/sankey5_4.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) valcond(300)
 ```
 
@@ -271,13 +271,13 @@ sankey value, from(source) to(destination) by(layer) valcond(300)
 
 ### Palettes
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) palette(CET C6)
 ```
 
 <img src="/figures/sankey6.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) colorby(level)
 ```
 
@@ -286,7 +286,7 @@ sankey value, from(source) to(destination) by(layer) colorby(level)
 
 ### color by variable (v1.4)
 
-```
+```stata
 gen trace1 = 1 if source=="App"
 
 sankey value, from(source) to(destination) by(layer) colorvar(trace1)
@@ -294,7 +294,7 @@ sankey value, from(source) to(destination) by(layer) colorvar(trace1)
 
 <img src="/figures/sankey6_2.png" width="100%">
 
-```
+```stata
 cap drop trace2
 gen trace2 = .
 replace trace2 = 1 if  source=="App" & destination=="App" & layer==0
@@ -307,20 +307,20 @@ sankey value, from(source) to(destination) by(layer) colorvar(trace2)
 
 <img src="/figures/sankey6_3.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) colorvar(trace2) palette(Oranges)
 ```
 
 <img src="/figures/sankey6_4.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) colorvar(trace2) palette(Blues) ///
  colorvarmiss(gs13) colorboxmiss(gs13)
 ```
 
 <img src="/figures/sankey6_5.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) colorvar(trace2) ///
 palette(blue*0.1 blue*0.3 blue*0.5 blue*0.7) colorvarmiss(gs13) colorboxmiss(gs13)
 ```
@@ -329,25 +329,25 @@ palette(blue*0.1 blue*0.3 blue*0.5 blue*0.7) colorvarmiss(gs13) colorboxmiss(gs1
 
 ### column titles (v1.4)
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) ctitles(Cat1 Cat2 Cat3 Cat4 Cat5)
 ```
 
 <img src="/figures/sankey6_7.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) ctitles(Cat1 Cat2 Cat3 Cat4 Cat5) ctg(-100)
 ```
 
 <img src="/figures/sankey6_8.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) ctitles("Cat 1" "Cat 2" "Cat 3" "Cat 4" "Cat 5") ctg(-100)
 ```
 
 <img src="/figures/sankey6_9.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) ctitles("Cat 1" "Cat 2" "Cat 3" "Cat 4" "Cat 5") ctpos(top) ctg(100) recenter(top)
 ```
 
@@ -356,7 +356,7 @@ sankey value, from(source) to(destination) by(layer) ctitles("Cat 1" "Cat 2" "Ca
 
 ### label rotation and offset
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) noval showtot palette(CET C6) ///
 	laba(0) labpos(3) labg(-1) offset(10)
 ```
@@ -366,25 +366,25 @@ sankey value, from(source) to(destination) by(layer) noval showtot palette(CET C
 
 ### hide values and labels (v1.5)
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) novalleft
 ```
 
 <img src="/figures/sankey8_1.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) novalright
 ```
 
 <img src="/figures/sankey8_2.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) noval
 ```
 
 <img src="/figures/sankey8_3.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) nolabels
 ```
 
@@ -394,13 +394,13 @@ sankey value, from(source) to(destination) by(layer) nolabels
 ### proportional values and labels (v1.5)
 
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) valprop vals(2) 
 ```
 
 <img src="/figures/sankey9_1.png" width="100%">
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) labprop labs(2)
 ```
 
@@ -412,7 +412,7 @@ sankey value, from(source) to(destination) by(layer) labprop labs(2)
 
 ### All together
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) palette(CET C6) alpha(60) ///
 	labs(2.5) laba(0) labpos(3) labg(-1) offset(5)  noval showtot ///
 	ctitles("Cat 1" "Cat 2" "Cat 3" "Cat 4" "Cat 5") ctg(-100) cts(3) ///
@@ -429,7 +429,7 @@ sankey value, from(source) to(destination) by(layer) palette(CET C6) alpha(60) /
 import excel using "https://github.com/asjadnaqvi/stata-sankey/blob/main/data/sankey_stocks.xlsx?raw=true", clear first
 ```
 
-```
+```stata
 sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) showtotal 
 sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) showtotal stock
 sankey value, from(source) to(destination) by(layer) xsize(2) ysize(1) showtotal stock2
@@ -483,9 +483,9 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 ## Change log
 
 **v1.91 (07 May 2026)**
-- Option `range()` added to fix the vertical scale across subsets, enabling consistent cross-panel height comparisons.
-- Bug fix: `to()` categories with equal totals were silently dropped when sorting by value. Fixed by tagging on variable identity rather than height.
-- Bug fix: `recenter()` displacement was computed against a pre-gap height reference, causing incorrect vertical positioning. Fixed by capturing the post-gap maximum.
+- Option `range()` added to allow users to define the vertical height for the Sankey. This allows consistent height comparisons especially if multiple Sankey are drawn from subsets of the same data.
+- Bug fix: `to()` categories with equal totals were silently dropped when sorting by value. 
+- Various code optimizations.
 
 **v1.9 (24 Jun 2025)**
 - Option `ctwrap()` added to wrap title labels.
