@@ -1,6 +1,7 @@
-*! sankey v1.9 (25 Jun 2025)
+*! sankey v1.91 (07 May 2026)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+*v1.91 (07 May 2026): range() option added to fix the vertical scale across subsets. Bug fix: to() categories with equal totals were being dropped. Bug fix: recenter() positioning corrected after gap adjustments.
 *v1.9  (25 Jun 2025): ctwrap() added. ctgap() is now based on precentage of maximum height. better tolerance of x-axis range. labpos() now accepts lists for fine tuning layers.
 *v1.81 (16 Oct 2024): wrap() improved. stock2 added to stock on the right. weights are allowed.
 *v1.8  (21 Sep 2024): added align, fill, wrap(), n(). Major code cleanup
@@ -45,7 +46,7 @@ version 15
 		[ sort1(string) sort2(string)  ]  /// // v1.6
 		[ percent ctpos(string) CTColor(string) * ]    /// // v1.7 
 		[ align fill wrap(numlist >=0 max=1) n(real 30) stock stock2 ctwrap(numlist >=0 max=1) ] ///	//	v1.8
-		[  ]  // v1.9
+		[ range(numlist max=1 >0) ]  // v1.91
 		
 
 	// check dependencies
@@ -388,7 +389,7 @@ preserve
 		
 		gsort layer2 `ssort1'
 		
-		egen tag1 = tag(layer2 height)
+		egen tag1 = tag(layer2 var)
 		by layer2: gen order = sum(tag1) // sort by value
 		cap drop tag1
 	}
@@ -442,7 +443,6 @@ preserve
 	
 	
 	
-	
 	*****************************
 	**** generate the boxes   ***
 	*****************************
@@ -462,6 +462,7 @@ preserve
 
 	tempvar mygap
 	summ heightsum if tag==1, meanonly
+	local hival_raw = r(max)   // pre-gap max for range() user-facing validation
 	local maxval = r(max) * `gap' / 100  
 	gen `mygap' = (order - 1) * `maxval' if tag==1 
 
@@ -469,6 +470,10 @@ preserve
 	replace y2 = y2 + `mygap'
 
 	cap drop heightsum
+
+	// post-gap max for recenter/range arithmetic
+	summ y2 if tag==1, meanonly
+	local hival_data = r(max)
 
 
 	
@@ -566,21 +571,31 @@ preserve
 	
 	// mark the highest value and the layer
 
-	summ y2, meanonly
-	local hival = r(max)
+	if "`range'" != "" {
+		if `range' < `hival_raw' {
+			noisily display as error "range() must be greater than or equal to the data maximum height (`hival_raw')."
+			exit 198
+		}
+		local hival = `range'
+	}
+	else {
+		local hival = `hival_data'
+	}
+
+	// keep visual scale fixed across recenter() choices
+	qui summ y2, meanonly
+	local yrange = max(`hival', r(max))
 	
 	
 	// recenter
 	
-	*** recenter to middle
-
 	levelsof layer2, local(lvls)		
 			
 	foreach x of local lvls {
 		
-		qui summ y1 if layer2==`x', meanonly
+		qui summ y1 if layer2==`x' & tag==1, meanonly
 		local ymin = r(min)
-		qui summ y2 if layer2==`x', meanonly
+		qui summ y2 if layer2==`x' & tag==1, meanonly
 		local ymax = r(max)
 		
 		if "`recenter'" == "bottom" | "`recenter'" == "bot"  | "`recenter'" == "b" { 		
@@ -595,8 +610,8 @@ preserve
 			local displace = `hival' - `ymax'
 		}		
 		
-		replace y1 = y1 + `displace' if layer2==`x'
-		replace y2 = y2 + `displace' if layer2==`x'
+		replace y1 = y1 + `displace' if layer2==`x' & tag==1
+		replace y2 = y2 + `displace' if layer2==`x' & tag==1
 		
 		replace stack_end   = stack_end   + `displace' if layer2==`x'
 		replace stack_start = stack_start + `displace' if layer2==`x'		
@@ -1005,7 +1020,7 @@ preserve
 			, 		///
 				legend(off) 										 ///
 					xlabel(minmax, nogrid) ylabel(0 `yrange' , nogrid)     ///
-					xscale(off range(`xrmin' `xrmax')) yscale(off)	 ///
+					xscale(off range(`xrmin' `xrmax')) yscale(off range(0 `yrange'))	 ///
 					`options'
 		
 */

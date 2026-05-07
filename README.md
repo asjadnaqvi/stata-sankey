@@ -11,8 +11,8 @@
 
 
 
-# sankey v1.9
-(24 Jun 2025)
+# sankey v1.91
+(07 May 2026)
 
 This package allows users to draw Sankey plots in Stata. It is based on the [Sankey Guide](https://medium.com/the-stata-guide/stata-graphs-sankey-diagram-ecddd112aca1) published on [the Stata Guide](https://medium.com/the-stata-guide) on Medium on October 2021.
 
@@ -21,13 +21,13 @@ This package allows users to draw Sankey plots in Stata. It is based on the [San
 
 The package can be installed via SSC or GitHub. The GitHub version, *might* be more recent due to bug fixes, feature updates etc, and *may* contain syntax improvements and changes in *default* values. See version numbers below. Eventually the GitHub version is published on SSC.
 
-SSC (**v1.9**):
+SSC (**v1.91**):
 
 ```
 ssc install sankey, replace
 ```
 
-GitHub (**v1.9**):
+GitHub (**v1.91**):
 
 ```
 net install sankey, from("https://raw.githubusercontent.com/asjadnaqvi/stata-sankey/main/installation/") replace
@@ -68,7 +68,7 @@ The syntax for the latest version is as follows:
 ```stata
 sankey value [if] [in] [weight], from(var) to(var) 
             [ by(var) palette(str) colorby(layer|level) colorvar(var) stock stock2 colorvarmiss(str) colorboxmiss(str)
-              smooth(1-8) gap(num) recenter(mid|bot|top) ctitles(list) ctgap(num) ctsize(num) ctposition(bot|top) 
+              smooth(1-8) gap(num) recenter(mid|bot|top) range(num) ctitles(list) ctgap(num) ctsize(num) ctposition(bot|top) 
               ctcolor(str) ctwrap(num) labangle(str) labsize(str) labposition(str) labgap(str) showtotal labprop labscale(num) 
               valsize(str) valcondition(num) format(str) valgap(str) novalues valprop valscale(num)
               novalright novalleft nolabels sort1(value|name[, reverse]) sort2(value|order[, reverse]) align fill 
@@ -482,6 +482,10 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-sankey/issues) to rep
 
 ## Change log
 
+**v1.91 (07 May 2026)**
+- Option `range()` added to fix the vertical scale across subsets, enabling consistent cross-panel height comparisons.
+- Bug fix: `to()` categories with equal totals were silently dropped when sorting by value. Fixed by tagging on variable identity rather than height.
+- Bug fix: `recenter()` displacement was computed against a pre-gap height reference, causing incorrect vertical positioning. Fixed by capturing the post-gap maximum.
 
 **v1.9 (24 Jun 2025)**
 - Option `ctwrap()` added to wrap title labels.
